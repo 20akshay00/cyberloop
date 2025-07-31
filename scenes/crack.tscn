@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://b646gc67qmx4m"]
+
+[ext_resource type="Script" uid="uid://br52nhuhwayk0" path="res://scripts/crack.gd" id="1_kfll5"]
+
+[sub_resource type="Curve" id="Curve_kfll5"]
+_data = [Vector2(0, 0.346821), 0.0, 0.0, 0, 0, Vector2(0.985765, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[node name="Crack" type="Line2D"]
+width = 8.0
+width_curve = SubResource("Curve_kfll5")
+default_color = Color(0.47451, 0.960784, 0.964706, 1)
+script = ExtResource("1_kfll5")
