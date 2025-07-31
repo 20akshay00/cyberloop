@@ -32,7 +32,7 @@ vec2 skew_y(vec2 uv, float factor) {
 void fragment() {
 	vec2 uv = UV - 0.5;
 	uv.x *= resolution.x / resolution.y;
-	//uv = rotate(uv + TIME * 0.025, rotation) + translation * zoom;
+	uv = rotate(uv, rotation) + translation * zoom;
 	float line_thickness = zoom * thickness / resolution.y;
 	vec3 color = smoothstep(1.0 - line_thickness, 1.0, draw_grid(uv * zoom)) * line_color;
 	COLOR = vec4(color * brightness, 1.0);

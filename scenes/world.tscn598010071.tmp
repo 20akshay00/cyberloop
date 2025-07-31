@@ -1,17 +1,16 @@
-[gd_scene load_steps=7 format=3 uid="uid://c2yidqjagbkrb"]
+[gd_scene load_steps=6 format=3 uid="uid://c2yidqjagbkrb"]
 
 [ext_resource type="Shader" uid="uid://bajafy2142gan" path="res://assets/shaders/grid.gdshader" id="1_k0juu"]
 [ext_resource type="Texture2D" uid="uid://yekrypfll38v" path="res://icon.svg" id="2_71j4m"]
 [ext_resource type="PackedScene" uid="uid://cvua0fel5ydtv" path="res://scenes/player.tscn" id="3_qfnet"]
 [ext_resource type="PackedScene" uid="uid://clep1ecol48uk" path="res://scenes/enemy.tscn" id="4_i7141"]
-[ext_resource type="PackedScene" uid="uid://b1k1si4vlki42" path="res://scenes/droid.tscn" id="5_71j4m"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_036b0"]
 shader = ExtResource("1_k0juu")
 shader_parameter/resolution = Vector2(1920, 1080)
 shader_parameter/line_color = Color(0.47451, 0.960784, 0.964706, 1)
 shader_parameter/zoom = 50.0
-shader_parameter/rotation = 1.46
+shader_parameter/rotation = 0.85
 shader_parameter/translation = Vector2(0, 0)
 shader_parameter/skew_x_factor = 0.64
 shader_parameter/skew_y_factor = 0.0
@@ -43,6 +42,3 @@ position = Vector2(651, 257)
 
 [node name="Enemy4" parent="." instance=ExtResource("4_i7141")]
 position = Vector2(541, 618)
-
-[node name="Droid" parent="." instance=ExtResource("5_71j4m")]
-position = Vector2(-351, 724)

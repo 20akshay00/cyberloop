@@ -5,8 +5,9 @@ var _is_orphan: bool = false
 var _max_points: int = 100
 var intersect_idx: int = -1
 
-var damage_area_scene: PackedScene = load("res://scenes/damage_area.tscn")
-var crack_scene: PackedScene = load("res://scenes/crack.tscn")
+@export var damage_area_scene: PackedScene
+
+var shape_points: PackedVector2Array = []
 
 func _ready() -> void:
 	_is_orphan = false
@@ -27,17 +28,30 @@ func _process(delta: float) -> void:
 			break
 
 	if intersect_idx >= 0:
-		var damage_area = damage_area_scene.instantiate()
-		damage_area.set_points(points.slice(intersect_idx, points.size()-1))
-		add_sibling(damage_area)
+		shape_points = points.slice(intersect_idx, points.size()-1)
 		
-		var crack = crack_scene.instantiate()
-		crack.points = points.slice(0, intersect_idx)
-		add_sibling(crack)
-		crack.destroy()
+		if calculate_area(shape_points) > 5000:
+			var damage_area = damage_area_scene.instantiate()
+			damage_area.set_points(shape_points)
+			add_sibling(damage_area)
+			
+			var crack = self.duplicate()
+			crack.points = points.slice(0, intersect_idx)
+			add_sibling(crack)
+			crack.destroy()
+			clear_points()
 
-		clear_points()
 		intersect_idx = -1
 
 func destroy():
 	_is_orphan = true
+
+func calculate_area(mesh_vertices: PackedVector2Array) -> float:
+	var result := 0.0
+	var num_vertices := mesh_vertices.size()
+
+	for q in range(num_vertices):
+		var p = (q - 1 + num_vertices) % num_vertices
+		result += mesh_vertices[q].cross(mesh_vertices[p])
+	
+	return abs(result) * 0.5

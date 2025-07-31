@@ -4,7 +4,7 @@ class_name DamageArea
 var _is_active: bool = false
 
 func _ready() -> void:
-	get_tree().create_timer(0.1).timeout.connect(
+	get_tree().create_timer(0.2).timeout.connect(
 		func(): 
 			_is_active = true
 			for body in get_overlapping_bodies():

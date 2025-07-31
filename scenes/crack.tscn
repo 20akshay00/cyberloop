@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://b646gc67qmx4m"]
+[gd_scene load_steps=4 format=3 uid="uid://b646gc67qmx4m"]
 
 [ext_resource type="Script" uid="uid://br52nhuhwayk0" path="res://scripts/crack.gd" id="1_kfll5"]
+[ext_resource type="PackedScene" uid="uid://db2hesmx6bfb7" path="res://scenes/damage_area.tscn" id="2_elxik"]
 
 [sub_resource type="Curve" id="Curve_kfll5"]
 _data = [Vector2(0, 0.346821), 0.0, 0.0, 0, 0, Vector2(0.985765, 1), 0.0, 0.0, 0, 0]
@@ -11,3 +12,4 @@ width = 8.0
 width_curve = SubResource("Curve_kfll5")
 default_color = Color(0.47451, 0.960784, 0.964706, 1)
 script = ExtResource("1_kfll5")
+damage_area_scene = ExtResource("2_elxik")
