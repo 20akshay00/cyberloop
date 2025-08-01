@@ -26,34 +26,32 @@ script = ExtResource("2_e3hyu")
 player = NodePath("../Player")
 
 [node name="TextureRect" type="TextureRect" parent="UI"]
-offset_left = 37.0
-offset_top = 899.0
-offset_right = 222.0
-offset_bottom = 944.0
+offset_left = 38.0
+offset_top = 1230.0
+offset_right = 223.0
+offset_bottom = 1275.0
 scale = Vector2(3, 3)
 texture = ExtResource("7_i7141")
 
 [node name="HealthBar" type="TextureProgressBar" parent="UI"]
-offset_left = 37.0
-offset_top = 899.0
-offset_right = 222.0
-offset_bottom = 944.0
+offset_left = 38.0
+offset_top = 1230.0
+offset_right = 223.0
+offset_bottom = 1275.0
 scale = Vector2(3, 3)
 max_value = 1.0
 step = 0.01
-value = 1.0
-texture_progress = ExtResource("3_7r4gi")
+texture_over = ExtResource("3_7r4gi")
 
 [node name="PowerBar" type="TextureProgressBar" parent="UI"]
-offset_left = 37.0
-offset_top = 899.0
-offset_right = 222.0
-offset_bottom = 944.0
+offset_left = 38.0
+offset_top = 1230.0
+offset_right = 223.0
+offset_bottom = 1275.0
 scale = Vector2(3, 3)
 max_value = 1.0
-step = 0.001
-value = 1.0
-texture_progress = ExtResource("4_w7kh3")
+step = 0.01
+texture_over = ExtResource("4_w7kh3")
 
 [node name="Parallax2D" type="Parallax2D" parent="."]
 repeat_size = Vector2(960, 960)
@@ -67,7 +65,7 @@ region_enabled = true
 region_rect = Rect2(0, 0, 1920, 1080)
 
 [node name="ProximityMine" parent="." instance=ExtResource("8_7r4gi")]
-position = Vector2(471, 206)
+position = Vector2(657, 234)
 
 [node name="Trails" type="Node2D" parent="."]
 
@@ -78,11 +76,12 @@ trails = NodePath("../Trails")
 [node name="Camera2D" type="Camera2D" parent="Player"]
 
 [node name="Enemy" parent="." node_paths=PackedStringArray("target") instance=ExtResource("4_i7141")]
+visible = false
 position = Vector2(-215, 566)
 target = NodePath("../Player")
 
 [node name="Droid" parent="." instance=ExtResource("5_71j4m")]
-position = Vector2(1368, 573)
+position = Vector2(1221, 432)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(-2287, 30.0001)

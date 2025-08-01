@@ -13,6 +13,18 @@ var _is_drawing: bool = false
 var death_tween: Tween = null
 var respawn_tween: Tween = null
 
+var MAX_POWER: float = 1.
+var power: float = 1.
+var POWER_COST: float = 0.001/5
+
+var MAX_HEALTH: float = 3.
+var health: float = 3.
+
+var RECHARGE_DIST: float = 30.
+var RECHARGE_AMOUNT: float = 0.0025
+
+var prev_pos: Vector2 = Vector2.ZERO
+
 func _ready() -> void:
 	_create_trail()
 
@@ -24,13 +36,25 @@ func _process(delta: float) -> void:
 		rotation = atan2(dir.y, dir.x) + PI/2
 
 		if Input.is_action_just_pressed("draw") and not _is_drawing:
-			_is_drawing = true
+			if power > 0.:
+				_is_drawing = true
 		if Input.is_action_just_released("draw") and _is_drawing:
 			_is_drawing = false
 			_create_trail()
 
 		if _is_drawing:
 			trail.add_point(global_position)
+			if trail.get_point_count() > 2:
+				power -= (global_position - prev_pos).length() * POWER_COST
+				if power < 0.:
+					power = 0.
+					_is_drawing = false
+					_create_trail()
+		elif (global_position - prev_pos).length() > RECHARGE_DIST and power < 1.:
+			power += RECHARGE_AMOUNT
+			if power > 1: power = 1.
+	
+		prev_pos = global_position
 
 func _create_trail() -> void:
 	if trail: trail.destroy()

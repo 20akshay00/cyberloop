@@ -19,7 +19,5 @@ metadata/_edit_group_ = true
 scale = Vector2(3, 3)
 texture = ExtResource("3_sweqy")
 
-[node name="Camera2D" type="Camera2D" parent="."]
-
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CapsuleShape2D_dwbse")

@@ -1,0 +1,99 @@
+[gd_scene load_steps=15 format=3 uid="uid://0287u7bkbm56"]
+
+[ext_resource type="Script" uid="uid://25tlmv4ec75s" path="res://scripts/proximity_mine.gd" id="1_fck1g"]
+[ext_resource type="Texture2D" uid="uid://c4u8u1kjijska" path="res://assets/art/proximity_mine_v1.png" id="1_lwjlu"]
+[ext_resource type="Texture2D" uid="uid://dtxxnkcafl66" path="res://assets/art/proximity_mine_light_v1.png" id="2_fck1g"]
+[ext_resource type="Texture2D" uid="uid://83hixt2oe7k6" path="res://assets/art/proximity_mine_range_line_v1.png" id="4_n8pgp"]
+[ext_resource type="Texture2D" uid="uid://bk66i2luboyy8" path="res://assets/art/explosion_anim_v2.png" id="5_n6sr2"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_lwjlu"]
+radius = 196.064
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7d6rn"]
+atlas = ExtResource("5_n6sr2")
+region = Rect2(0, 0, 79, 79)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_u3bxi"]
+atlas = ExtResource("5_n6sr2")
+region = Rect2(79, 0, 79, 79)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kvxx3"]
+atlas = ExtResource("5_n6sr2")
+region = Rect2(158, 0, 79, 79)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8refg"]
+atlas = ExtResource("5_n6sr2")
+region = Rect2(237, 0, 79, 79)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_m8q4w"]
+atlas = ExtResource("5_n6sr2")
+region = Rect2(316, 0, 79, 79)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_frfxg"]
+atlas = ExtResource("5_n6sr2")
+region = Rect2(395, 0, 79, 79)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nnr3v"]
+atlas = ExtResource("5_n6sr2")
+region = Rect2(474, 0, 79, 79)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_nnr3v"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7d6rn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_u3bxi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kvxx3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8refg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_m8q4w")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_frfxg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nnr3v")
+}],
+"loop": false,
+"name": &"explode",
+"speed": 10.0
+}]
+
+[node name="ProximityMine" type="Area2D"]
+collision_layer = 2
+script = ExtResource("1_fck1g")
+
+[node name="MineSprite" type="Sprite2D" parent="."]
+scale = Vector2(3, 3)
+texture = ExtResource("1_lwjlu")
+
+[node name="LightSprite" type="Sprite2D" parent="."]
+scale = Vector2(3, 3)
+texture = ExtResource("2_fck1g")
+
+[node name="RangeSprite" type="Sprite2D" parent="."]
+scale = Vector2(5, 5)
+texture = ExtResource("4_n8pgp")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_lwjlu")
+
+[node name="Explosion" type="AnimatedSprite2D" parent="."]
+visible = false
+scale = Vector2(5, 5)
+sprite_frames = SubResource("SpriteFrames_nnr3v")
+animation = &"explode"
+
+[node name="ExplosionTimer" type="Timer" parent="."]
+wait_time = 0.05
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]
+[connection signal="timeout" from="ExplosionTimer" to="." method="_on_explosion_timer_timeout"]

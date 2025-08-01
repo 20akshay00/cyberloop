@@ -1,4 +1,5 @@
 extends CharacterBody2D
+class_name Enemy
 
 var death_tween: Tween = null 
 var _is_active = true
