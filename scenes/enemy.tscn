@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://clep1ecol48uk"]
 
 [ext_resource type="Script" uid="uid://cpcv4y15t1lwt" path="res://scripts/enemy.gd" id="1_4gyqm"]
-[ext_resource type="Texture2D" uid="uid://dy025ecnryrp7" path="res://assets/art/tron_bike_v1.png" id="2_4gyqm"]
-[ext_resource type="Texture2D" uid="uid://cdvusbd34ck5j" path="res://assets/art/tron_bike_glow_lines_v1.png" id="3_4ra3w"]
+[ext_resource type="Texture2D" uid="uid://cqro5ie6mvm0b" path="res://assets/art/tron_bike_v1.png" id="2_4gyqm"]
+[ext_resource type="Texture2D" uid="uid://t2kq8dkd2xt5" path="res://assets/art/tron_bike_glow_lines_v1.png" id="3_4ra3w"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_4gyqm"]
 radius = 24.5
@@ -20,6 +20,7 @@ shape = SubResource("CapsuleShape2D_4gyqm")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 avoidance_enabled = true
+radius = 20.0
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 0.1

@@ -34,6 +34,5 @@ func _physics_process(delta: float) -> void:
 		#$NavigationAgent2D.target_position = target.global_position
 	#$Timer.start()
 
-
 func _on_navigation_agent_2d_velocity_computed(safe_velocity: Vector2) -> void:
 	velocity = safe_velocity

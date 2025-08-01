@@ -35,7 +35,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if _is_active:
-		global_position = lerp(position, get_global_mouse_position(), 0.035)
+		global_position = lerp(position, get_global_mouse_position(), 1.0 - pow(0.965, delta * 60))
 		
 		dir = get_global_mouse_position() - position
 		rotation = atan2(dir.y, dir.x) + PI/2
@@ -80,6 +80,7 @@ func _create_trail() -> void:
 	trails.add_child.call_deferred(trail)
 
 func die() -> void:
+	hit(1)
 	_is_active = false
 	_is_drawing = false
 	
@@ -102,18 +103,16 @@ func die() -> void:
 func respawn() -> void:
 	_create_trail()
 	if respawn_tween: respawn_tween.kill()
+	modulate.a = 1.
 	respawn_tween = get_tree().create_tween()
 	respawn_tween.tween_property(self, "global_position", Vector2.ZERO, 1)
-
-	respawn_tween.set_parallel()
 	respawn_tween.tween_property(self, "scale", Vector2(1, 1), 0.5)
-	respawn_tween.tween_property(self, "modulate:a", 1, 0.5)
-	respawn_tween.set_parallel(false)
 	respawn_tween.tween_callback(
 		func():
 			_is_active = true
 			drive_sound.play()
 	)
+	respawn_tween.tween_method(func(val): power = val, power, 1., 1. * (1 - power))
 	
 func hit(val) -> void:
 	health -= val

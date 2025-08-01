@@ -1,10 +1,10 @@
 [gd_scene load_steps=15 format=3 uid="uid://0287u7bkbm56"]
 
 [ext_resource type="Script" uid="uid://25tlmv4ec75s" path="res://scripts/proximity_mine.gd" id="1_fck1g"]
-[ext_resource type="Texture2D" uid="uid://c4u8u1kjijska" path="res://assets/art/proximity_mine_v1.png" id="1_lwjlu"]
-[ext_resource type="Texture2D" uid="uid://dtxxnkcafl66" path="res://assets/art/proximity_mine_light_v1.png" id="2_fck1g"]
-[ext_resource type="Texture2D" uid="uid://83hixt2oe7k6" path="res://assets/art/proximity_mine_range_line_v1.png" id="4_n8pgp"]
-[ext_resource type="Texture2D" uid="uid://bk66i2luboyy8" path="res://assets/art/explosion_anim_v2.png" id="5_n6sr2"]
+[ext_resource type="Texture2D" uid="uid://b8e51tbtfk7x3" path="res://assets/art/proximity_mine_v1.png" id="1_lwjlu"]
+[ext_resource type="Texture2D" uid="uid://bkhwwa5xadhn4" path="res://assets/art/proximity_mine_light_v1.png" id="2_fck1g"]
+[ext_resource type="Texture2D" uid="uid://w6kplvfdaudc" path="res://assets/art/proximity_mine_range_line_v1.png" id="4_n8pgp"]
+[ext_resource type="Texture2D" uid="uid://bf667fh16sk6k" path="res://assets/art/explosion_anim_v2.png" id="5_n6sr2"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_lwjlu"]
 radius = 196.064

@@ -9,9 +9,19 @@ var intersect_idx: int = -1
 
 var shape_points: PackedVector2Array = []
 
+const spawn_side: float = 150.
+var spawn_area := PackedVector2Array(
+	[
+		Vector2(-spawn_side, -spawn_side), 
+		Vector2(-spawn_side, spawn_side), 
+		Vector2(spawn_side, spawn_side), 
+		Vector2(spawn_side, -spawn_side)
+		]
+)
+
 func _ready() -> void:
 	_is_orphan = false
-
+	
 func _process(delta: float) -> void:
 	if _is_orphan:
 		if get_point_count() > 0:
@@ -31,15 +41,16 @@ func _process(delta: float) -> void:
 		shape_points = points.slice(intersect_idx, points.size()-1)
 		
 		if calculate_area(shape_points) > 5000:
-			var damage_area = damage_area_scene.instantiate()
-			damage_area.set_points(shape_points)
-			add_sibling(damage_area)
-			
-			var crack = self.duplicate()
-			crack.points = points.slice(0, intersect_idx)
-			add_sibling(crack)
-			crack.destroy()
-			clear_points()
+			if Geometry2D.intersect_polygons(shape_points, spawn_area).size() == 0:
+				var damage_area = damage_area_scene.instantiate()
+				damage_area.set_points(shape_points)
+				add_sibling(damage_area)
+				
+				var crack = self.duplicate()
+				crack.points = points.slice(0, intersect_idx)
+				add_sibling(crack)
+				crack.destroy()
+				clear_points()
 
 		intersect_idx = -1
 

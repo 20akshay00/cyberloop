@@ -16,11 +16,8 @@ func _ready() -> void:
 func set_points(points:PackedVector2Array) -> void:
 	$CollisionPolygon2D.polygon = points
 	
-	var visual_points = points.duplicate()
-	visual_points.push_back(points[0])
-	
-	$Line2D.points = visual_points
-	$Polygon2D.polygon = visual_points
+	$Line2D.points = points
+	$Polygon2D.polygon = points
 	$NavigationObstacle2D.vertices = points
 
 func _on_body_entered(body: Node2D) -> void:

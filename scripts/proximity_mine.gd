@@ -6,6 +6,9 @@ var tween: Tween = null
 @onready var explosion_timer := $ExplosionTimer
 var _is_exploding := false
 
+var death_tween: Tween = null 
+var _is_active = true
+
 func explode() -> void:
 	_is_exploding = true
 	$Explosion.show()
@@ -21,7 +24,7 @@ func explode() -> void:
 	tween.tween_property(self, "modulate:a", 0., 0.2)
 
 func _on_body_entered(body: Node2D) -> void:
-	if body is Player:
+	if body is Player and not _is_exploding:
 		explode()
 		body.hit(1)
 		#if explosion_timer.is_stopped():
@@ -44,3 +47,16 @@ func _on_body_entered(body: Node2D) -> void:
 		#if body is Player:
 			#print("hi")
 			#body.hit(1)
+
+func die() -> void:
+	if _is_active:
+		_is_active = false
+		if death_tween: death_tween.kill() 
+		
+		death_tween = get_tree().create_tween()
+		death_tween.set_parallel()
+		death_tween.tween_property(self, "rotation", rotation + 3*PI, 1)
+		death_tween.tween_property(self, "scale", Vector2(0., 0.), 1)
+		death_tween.tween_property(self, "modulate:a", 0., 1)
+		death_tween.set_parallel(false)
+		death_tween.tween_callback(queue_free)
