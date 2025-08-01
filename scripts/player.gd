@@ -18,7 +18,7 @@ var power: float = 1.
 var POWER_COST: float = 0.001/5
 
 var MAX_HEALTH: float = 3.
-var health: float = 3.
+var health: float = 5.
 
 var RECHARGE_DIST: float = 30.
 var RECHARGE_AMOUNT: float = 0.0025
@@ -93,3 +93,7 @@ func respawn() -> void:
 		func():
 			_is_active = true
 	)
+	
+func hit(val) -> void:
+	health -= val
+	EventManager.player_hit.emit()
