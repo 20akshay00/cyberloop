@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://c2yidqjagbkrb"]
+[gd_scene load_steps=9 format=3 uid="uid://c2yidqjagbkrb"]
 
 [ext_resource type="Shader" uid="uid://bajafy2142gan" path="res://assets/shaders/grid.gdshader" id="1_k0juu"]
+[ext_resource type="Script" uid="uid://d1e3vu4scial2" path="res://scenes/world.gd" id="1_qfnet"]
 [ext_resource type="Texture2D" uid="uid://yekrypfll38v" path="res://icon.svg" id="2_71j4m"]
 [ext_resource type="PackedScene" uid="uid://cvua0fel5ydtv" path="res://scenes/player.tscn" id="3_qfnet"]
 [ext_resource type="PackedScene" uid="uid://clep1ecol48uk" path="res://scenes/enemy.tscn" id="4_i7141"]
@@ -18,7 +19,13 @@ shader_parameter/skew_y_factor = 0.0
 shader_parameter/thickness = 0.1
 shader_parameter/brightness = 0.34
 
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_71j4m"]
+vertices = PackedVector2Array(2325, 1657.06, -2219.03, 1685.93, -2228.96, -1515.01, 2325, -1519.98)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-2239, -1525, -2229, 1696, 2335, 1667, 2335, -1530)])
+
 [node name="World" type="Node2D"]
+script = ExtResource("1_qfnet")
 
 [node name="BG" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_036b0")
@@ -32,17 +39,34 @@ texture = ExtResource("2_71j4m")
 position = Vector2(274, 320)
 trails = NodePath("../Trails")
 
-[node name="Enemy" parent="." instance=ExtResource("4_i7141")]
+[node name="Enemy" parent="." node_paths=PackedStringArray("target") instance=ExtResource("4_i7141")]
 position = Vector2(-215, 566)
-
-[node name="Enemy2" parent="." instance=ExtResource("4_i7141")]
-position = Vector2(76, 113)
-
-[node name="Enemy3" parent="." instance=ExtResource("4_i7141")]
-position = Vector2(651, 257)
-
-[node name="Enemy4" parent="." instance=ExtResource("4_i7141")]
-position = Vector2(541, 618)
+target = NodePath("../Player")
 
 [node name="Droid" parent="." instance=ExtResource("5_71j4m")]
 position = Vector2(-351, 724)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(-2287, 30.0001)
+scale = Vector2(1, 25.9297)
+texture = ExtResource("2_71j4m")
+
+[node name="Sprite2D2" type="Sprite2D" parent="."]
+position = Vector2(2386, 8)
+scale = Vector2(1, 25.9297)
+texture = ExtResource("2_71j4m")
+
+[node name="Sprite2D3" type="Sprite2D" parent="."]
+position = Vector2(85, -1560)
+rotation = 1.5708
+scale = Vector2(1, 37.498)
+texture = ExtResource("2_71j4m")
+
+[node name="Sprite2D4" type="Sprite2D" parent="."]
+position = Vector2(56, 1741)
+rotation = 1.5708
+scale = Vector2(1, 37.498)
+texture = ExtResource("2_71j4m")
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
+navigation_polygon = SubResource("NavigationPolygon_71j4m")

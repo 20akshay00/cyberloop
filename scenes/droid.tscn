@@ -11,6 +11,8 @@ radius = 1211.44
 radius = 27.0185
 
 [node name="Droid" type="CharacterBody2D"]
+collision_layer = 2
+collision_mask = 0
 script = ExtResource("1_3qyvh")
 projectile_scene = ExtResource("2_b6sar")
 
