@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://ct8hijshy0q6"
+path="res://.godot/imported/Bike Player Loop.ogg-c933fc206b03534f8be014663ea9b976.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/sfx/Bike Player Loop.ogg"
+dest_files=["res://.godot/imported/Bike Player Loop.ogg-c933fc206b03534f8be014663ea9b976.oggvorbisstr"]
+
+[params]
+
+loop=true
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

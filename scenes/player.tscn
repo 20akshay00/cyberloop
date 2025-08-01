@@ -1,8 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://cvua0fel5ydtv"]
+[gd_scene load_steps=7 format=3 uid="uid://cvua0fel5ydtv"]
 
 [ext_resource type="Script" uid="uid://bbted26h1x1jq" path="res://scripts/player.gd" id="1_i3pqv"]
 [ext_resource type="PackedScene" uid="uid://b646gc67qmx4m" path="res://scenes/crack.tscn" id="2_hqtel"]
 [ext_resource type="Texture2D" uid="uid://dy025ecnryrp7" path="res://assets/art/tron_bike_v1.png" id="3_sweqy"]
+[ext_resource type="AudioStream" uid="uid://ct8hijshy0q6" path="res://assets/sfx/Bike Player Loop.ogg" id="4_dqkch"]
+[ext_resource type="AudioStream" uid="uid://d0ry13cf5xo8h" path="res://assets/sfx/Trail drawing.ogg" id="5_qlg0r"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_dwbse"]
 radius = 24.0
@@ -21,3 +23,9 @@ texture = ExtResource("3_sweqy")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CapsuleShape2D_dwbse")
+
+[node name="DriveSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_dqkch")
+
+[node name="DrawSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_qlg0r")

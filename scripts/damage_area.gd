@@ -5,7 +5,7 @@ var _is_active: bool = false
 
 func _ready() -> void:
 	EventManager.hole_created.emit()
-	
+	AudioManager.play_effect(AudioManager.loop_created_sfx, 10.)
 	get_tree().create_timer(0.2).timeout.connect(
 		func(): 
 			_is_active = true

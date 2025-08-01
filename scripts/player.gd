@@ -25,8 +25,13 @@ var RECHARGE_AMOUNT: float = 0.0025
 
 var prev_pos: Vector2 = Vector2.ZERO
 
+@onready var drive_sound := $DriveSound
+@onready var draw_sound := $DrawSound
+var pitch: float = 0.
+
 func _ready() -> void:
 	_create_trail()
+	drive_sound.play()
 
 func _process(delta: float) -> void:
 	if _is_active:
@@ -38,9 +43,14 @@ func _process(delta: float) -> void:
 		if Input.is_action_just_pressed("draw") and not _is_drawing:
 			if power > 0.:
 				_is_drawing = true
+				drive_sound.stop()
+				draw_sound.play()
+	
 		if Input.is_action_just_released("draw") and _is_drawing:
 			_is_drawing = false
 			_create_trail()
+			draw_sound.stop()
+			drive_sound.play()
 
 		if _is_drawing:
 			trail.add_point(global_position)
@@ -50,10 +60,17 @@ func _process(delta: float) -> void:
 					power = 0.
 					_is_drawing = false
 					_create_trail()
-		elif (global_position - prev_pos).length() > RECHARGE_DIST and power < 1.:
-			power += RECHARGE_AMOUNT
-			if power > 1: power = 1.
+					draw_sound.stop()
+					drive_sound.play()
+		else:
+			if (global_position - prev_pos).length() > RECHARGE_DIST and power < 1.:
+				power += RECHARGE_AMOUNT
+				if power > 1: power = 1.
 	
+		pitch = clamp(0, 2, (global_position - prev_pos).length()/20. * 1.)
+		drive_sound.pitch_scale = pitch
+		drive_sound.pitch_scale = pitch
+
 		prev_pos = global_position
 
 func _create_trail() -> void:
@@ -66,6 +83,9 @@ func die() -> void:
 	_is_active = false
 	_is_drawing = false
 	
+	draw_sound.stop()
+	drive_sound.stop()
+
 	if death_tween: death_tween.kill() 
 	
 	death_tween = get_tree().create_tween()
@@ -92,6 +112,7 @@ func respawn() -> void:
 	respawn_tween.tween_callback(
 		func():
 			_is_active = true
+			drive_sound.play()
 	)
 	
 func hit(val) -> void:
