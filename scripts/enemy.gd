@@ -10,6 +10,9 @@ var target: Player = null
 var run: bool = false
 var _state: bool = true
 
+var chase_speed: float = 1400
+var run_speed: float = 700
+
 func _ready() -> void:
 	target = get_tree().get_nodes_in_group("player")[0]
 	add_to_group("enemies")
@@ -37,19 +40,18 @@ func _physics_process(delta: float) -> void:
 		$NavigationAgent2D.target_position = target.global_position
 		var nav_point_dir := to_local($NavigationAgent2D.get_next_path_position())
 		
-		print((target.global_position - target.prev_pos).length())
-		if (target.trail.get_point_count() > 50 and (target.global_position - target.prev_pos).length() > 10.) or target._is_invincible:
+		if (target.trail.get_point_count() > 20 and target.velocity.length() > 1500.) or target._is_invincible:
 			if _state:
 				run = true if randf() > 0.2 else false
 				_state = false
 			
 			if run: 
-				$NavigationAgent2D.set_velocity(nav_point_dir.normalized() * -550.)
+				$NavigationAgent2D.set_velocity(nav_point_dir.normalized() * -run_speed)
 			else:
-				$NavigationAgent2D.set_velocity(nav_point_dir.normalized() * 900.)
+				$NavigationAgent2D.set_velocity(nav_point_dir.normalized() * chase_speed)
 		else:
 			_state = true
-			$NavigationAgent2D.set_velocity(nav_point_dir.normalized() * 900.)
+			$NavigationAgent2D.set_velocity(nav_point_dir.normalized() * 1100.)
 
 func _on_navigation_agent_2d_velocity_computed(safe_velocity: Vector2) -> void:
 	velocity = safe_velocity
@@ -64,3 +66,4 @@ func _on_hit_area_body_entered(body: Node2D) -> void:
 	if body is Player:
 		body.hit(1)
 		queue_free()
+		#AudioManager.play_effect(AudioManager.explosion_sfx).finished.connect(func(): queue_free())

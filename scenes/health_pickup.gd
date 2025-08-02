@@ -19,7 +19,7 @@ func _ready() -> void:
 	if tween: tween.kill()
 	tween = get_tree().create_tween()
 	tween.set_loops()
-	tween.tween_property(self, "scale", Vector2(1.2, 1.2), 0.5)
+	tween.tween_property(self, "scale", Vector2(1.3, 1.3), 0.5)
 	tween.tween_property(self, "scale", Vector2(1., 1.), 0.5)
 
 func fall() -> void:

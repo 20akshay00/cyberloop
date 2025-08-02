@@ -7,6 +7,8 @@ var power_full_sfx := load("res://assets/sfx/Power full.mp3")
 var draw_start_sfx := load("res://assets/sfx/Trail Draw Start.mp3")
 var power_empty_sfx := load("res://assets/sfx/Power Empty.mp3")
 var player_hit_sfx := load("res://assets/sfx/Player Hit 2.mp3")
+var enemy_shoot_sfx := load("res://assets/sfx/Enemy shooting.mp3")
+var explosion_sfx := load("res://assets/sfx/Explosion.mp3")
 
 func _play_music(music: AudioStream, volume = -7):
 	if stream == music:
@@ -28,5 +30,5 @@ func play_effect(aud_stream: AudioStream, volume = 0.0, loops = false):
 	fx_player.play()
 	if not loops: 
 		fx_player.finished.connect(fx_player.queue_free)
-	else:
-		return fx_player
+
+	return fx_player

@@ -13,7 +13,7 @@ var _is_active = true
 func _process(delta: float) -> void:
 	if target:
 		dir = target.global_position - global_position
-		rotation = atan2(dir.y, dir.x)
+		rotation = lerp_angle(rotation, atan2(dir.y, dir.x), 0.5)
 
 func _on_detection_area_body_entered(body: Node2D) -> void:
 	if body is Player:
@@ -26,12 +26,14 @@ func _on_detection_area_body_exited(body: Node2D) -> void:
 		shoot_timer.stop()
 
 func _on_shoot_timer_timeout() -> void:
-	if target:
+	if target and _is_active:
 		var projectile = projectile_scene.instantiate()
 		projectile.global_position = global_position
 		projectile.rotation = rotation
 		projectile.velocity = 900 * Vector2(cos(rotation), sin(rotation))
 		add_sibling(projectile)
+		AudioManager.play_effect(AudioManager.enemy_shoot_sfx)
+
 
 func fall() -> void:
 	die()

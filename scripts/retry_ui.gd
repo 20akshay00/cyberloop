@@ -11,7 +11,7 @@ var tween: Tween = null
 func _ready() -> void:
 	hide()
 	process_mode = Node.PROCESS_MODE_WHEN_PAUSED
-	EventManager.game_over.connect(_on_game_over)
+	#EventManager.game_over.connect(_on_game_over)
 	card.modulate.a = 0.
 	title.modulate.a = 0.
 	score.modulate.a = 0.

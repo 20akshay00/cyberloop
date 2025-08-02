@@ -9,6 +9,7 @@ shader_parameter/progress = 0.0
 shader_parameter/reverse = true
 
 [node name="TransitionManager" type="CanvasLayer"]
+layer = 12
 script = ExtResource("1_nk83w")
 
 [node name="ColorRect" type="ColorRect" parent="."]

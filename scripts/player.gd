@@ -6,7 +6,6 @@ class_name Player
 @onready var sprite := $Sprite2D
 var trail: Crack
 
-var dir: Vector2 = Vector2.ZERO
 var _is_active: bool = true
 var _is_drawing: bool = false
 
@@ -20,8 +19,8 @@ var POWER_COST: float = 0.0005/5
 var MAX_HEALTH: float = 3.
 var health: float = 5.
 
-var RECHARGE_DIST: float = 20.
-var RECHARGE_AMOUNT: float = 0.0035
+var RECHARGE_DIST: float = 30.
+var RECHARGE_AMOUNT: float = 0.0025
 
 var prev_pos: Vector2 = Vector2.ZERO
 
@@ -38,6 +37,14 @@ var closest_enemy_dist: float = 1e10
 var _is_invincible: bool = false
 var itween: Tween = null
 
+@export var min_speed: float = 1000.0
+@export var max_speed: float = 2500.0
+@export var rotation_speed: float = 10.0  # radians per second
+@export var sensitivity: float = 2.5  # How strongly distance affects speed
+
+var mouse_dir := Vector2.ZERO
+var mouse_distance := 0.
+
 func _ready() -> void:
 	_create_trail()
 	
@@ -46,18 +53,23 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if _is_active:
-##		global_position = lerp(position, get_global_mouse_position(), 1.0 - pow(0.965, delta * 60))
+		var target_pos = get_global_mouse_position()
+		if (target_pos - global_position).length() > 15.0:
+			mouse_dir = target_pos - global_position
+			mouse_distance = mouse_dir.length()
 
-		global_position = lerp(position, get_global_mouse_position(), 1.0 - pow(0.95, delta * 60))
-		
-		dir = get_global_mouse_position() - position
-		rotation = lerp_angle(rotation, atan2(dir.y, dir.x) + PI/2, 0.2)
+		var target_rot = mouse_dir.angle() + PI/2
+		rotation = lerp_angle(rotation, target_rot, rotation_speed * delta)
+
+		var speed = min_speed + min(mouse_distance * sensitivity, max_speed)
+		velocity = Vector2(cos(rotation-PI/2), sin(rotation-PI/2)) * speed
+		move_and_slide()
 
 		if Input.is_action_just_pressed("draw") and not _is_drawing:
 			if power > 0.:
 				_is_drawing = true
 				draw_sound.play()
-				#AudioManager.play_effect(AudioManager.draw_start_sfx, 10)
+				AudioManager.play_effect(AudioManager.draw_start_sfx, 10)
 
 		if Input.is_action_just_released("draw") and _is_drawing:
 			_is_drawing = false
