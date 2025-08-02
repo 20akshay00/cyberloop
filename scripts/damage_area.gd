@@ -19,8 +19,15 @@ func _ready() -> void:
 	fade_in()
 
 func set_points(points:PackedVector2Array) -> void:
-	$CollisionPolygon2D.polygon = points
-	
+	var inset_polygons= Geometry2D.offset_polygon(points, -40)
+	if inset_polygons.size() > 0:
+		for polygon in inset_polygons:
+			var collision = CollisionPolygon2D.new()
+			collision.polygon = polygon
+			add_child(collision)
+	else:
+		$CollisionPolygon2D.polygon = points
+
 	$Line2D.points = points
 	$Polygon2D.polygon = points
 	$NavigationObstacle2D.vertices = points

@@ -41,7 +41,7 @@ material = SubResource("ShaderMaterial_a2a3j")
 points = PackedVector2Array(56, 77, 51.4682, 115.694, 43, 188, 402, 342, 336, -69)
 closed = true
 width = 2.0
-default_color = Color(0.14902, 0.301961, 0.305882, 1)
+default_color = Color(0.144502, 0.294273, 0.298113, 1)
 texture_mode = 1
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]

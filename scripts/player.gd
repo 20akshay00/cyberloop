@@ -136,22 +136,26 @@ func hit(val) -> void:
 	if not _is_invincible:
 		damage(val)
 		_activate_invincibility()
-		EventManager.player_hit.emit()
+		EventManager.player_health_changed.emit()
 		AudioManager.play_effect(AudioManager.player_hit_sfx)
 		_shake_screen()
 
 func damage(val) -> void:
 	health -= val
 
-func _activate_invincibility(duration: float = 5) -> void:
+func _activate_invincibility(duration: float = 3) -> void:
 	_is_invincible = true
 	if itween: itween.kill()
 	itween = get_tree().create_tween()
 	for i in range(duration):
-		itween.tween_property(sprite.material, "shader_parameter/overlay_strength", 0.8, 0.2)
-		itween.tween_property(sprite.material, "shader_parameter/overlay_strength", 0.0, 0.2)
+		itween.tween_property(sprite.material, "shader_parameter/overlay_strength", 0.8, 0.1)
+		itween.tween_property(sprite.material, "shader_parameter/overlay_strength", 0.0, 0.1)
 
 	itween.chain().tween_callback(func(): _is_invincible = false)
 
 func _shake_screen() -> void:
 	$Camera2D.screen_shake(8, 0.5)
+
+func add_health(val: float) -> void:
+	EventManager.player_health_changed.emit()
+	health += val

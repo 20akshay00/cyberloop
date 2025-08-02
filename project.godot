@@ -40,6 +40,7 @@ draw={
 
 2d_physics/layer_1="Collision"
 2d_physics/layer_2="Hole"
+2d_physics/layer_3="Pickup"
 
 [rendering]
 

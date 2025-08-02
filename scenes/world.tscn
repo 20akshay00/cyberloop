@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://c2yidqjagbkrb"]
+[gd_scene load_steps=14 format=3 uid="uid://c2yidqjagbkrb"]
 
 [ext_resource type="Script" uid="uid://d1e3vu4scial2" path="res://scenes/world.gd" id="1_qfnet"]
 [ext_resource type="Texture2D" uid="uid://c3284varj7i2o" path="res://assets/art/background_v2.png" id="2_4mrxx"]
@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://dsncjko7y1q8u" path="res://assets/art/spawn_point_v1.png" id="7_e3hyu"]
 [ext_resource type="Texture2D" uid="uid://douaksfsgn5wr" path="res://assets/art/health_stamina_bar_frame_v1.png" id="7_i7141"]
 [ext_resource type="PackedScene" uid="uid://0287u7bkbm56" path="res://scenes/proximity_mine.tscn" id="8_7r4gi"]
+[ext_resource type="PackedScene" uid="uid://bj2wc68ug3gbv" path="res://scenes/health_pickup.tscn" id="12_q5onr"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_71j4m"]
 vertices = PackedVector2Array(2325, 1657.06, -2219.03, 1685.93, -2228.96, -1515.01, 2325, -1519.98)
@@ -73,6 +74,12 @@ modulate = Color(1, 1, 1, 0.2)
 scale = Vector2(4, 4)
 texture = ExtResource("7_e3hyu")
 
+[node name="HealthPickup" parent="." instance=ExtResource("12_q5onr")]
+position = Vector2(-225, 241)
+
+[node name="HealthPickup2" parent="." instance=ExtResource("12_q5onr")]
+position = Vector2(-97, -211)
+
 [node name="ProximityMine" parent="." instance=ExtResource("8_7r4gi")]
 position = Vector2(471, 206)
 
@@ -100,5 +107,4 @@ position = Vector2(1829, 569)
 position = Vector2(-662, 32)
 
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
-visible = false
 navigation_polygon = SubResource("NavigationPolygon_71j4m")

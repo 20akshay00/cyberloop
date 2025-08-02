@@ -7,7 +7,7 @@ extends CanvasLayer
 var tween: Tween = null
 
 func _ready() -> void:
-	EventManager.player_hit.connect(_on_player_health_changed)
+	EventManager.player_health_changed.connect(_on_player_health_changed)
 
 func _process(delta: float) -> void:
 	power_bar.value = player.power

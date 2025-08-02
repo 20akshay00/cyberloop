@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cg4kwqudl51sb"
+path="res://.godot/imported/Loop Created Longer 2.mp3-bf38b0df569c8eb9ad98e8c78ab3561f.mp3str"
+
+[deps]
+
+source_file="res://assets/sfx/Loop Created Longer 2.mp3"
+dest_files=["res://.godot/imported/Loop Created Longer 2.mp3-bf38b0df569c8eb9ad98e8c78ab3561f.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

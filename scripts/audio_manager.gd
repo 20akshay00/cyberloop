@@ -1,6 +1,6 @@
 extends AudioStreamPlayer2D
 
-var loop_created_sfx := load("res://assets/sfx/Loop Created.mp3")
+var loop_created_sfx := load("res://assets/sfx/Loop Created Longer 2.mp3")
 var fall_sfx := load("res://assets/sfx/Spiral long.mp3")
 var loop_invalid_sfx := load("res://assets/sfx/Cannot Form Loop.mp3")
 var power_full_sfx := load("res://assets/sfx/Power full.mp3")
