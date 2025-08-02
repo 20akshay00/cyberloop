@@ -24,7 +24,8 @@ AudioManager="*res://scenes/audio_manager.tscn"
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
-mouse_cursor/custom_image="uid://c04tu46e1yf28"
+window/stretch/mode="viewport"
+mouse_cursor/custom_image="uid://byvh4x7y4ro8y"
 
 [input]
 

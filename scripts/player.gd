@@ -20,7 +20,7 @@ var POWER_COST: float = 0.001/5
 var MAX_HEALTH: float = 3.
 var health: float = 5.
 
-var RECHARGE_DIST: float = 30.
+var RECHARGE_DIST: float = 20.
 var RECHARGE_AMOUNT: float = 0.0025
 
 var prev_pos: Vector2 = Vector2.ZERO
@@ -28,6 +28,12 @@ var prev_pos: Vector2 = Vector2.ZERO
 @onready var drive_sound := $DriveSound
 @onready var draw_sound := $DrawSound
 var pitch: float = 0.
+
+@export var spawn_point: Sprite2D # absolutely horrid architecture!
+
+# i-frames
+var _is_invincible: bool = false
+var itween: Tween = null
 
 func _ready() -> void:
 	_create_trail()
@@ -38,19 +44,17 @@ func _process(delta: float) -> void:
 		global_position = lerp(position, get_global_mouse_position(), 1.0 - pow(0.965, delta * 60))
 		
 		dir = get_global_mouse_position() - position
-		rotation = atan2(dir.y, dir.x) + PI/2
+		rotation = lerp_angle(rotation, atan2(dir.y, dir.x) + PI/2, 0.2)
 
 		if Input.is_action_just_pressed("draw") and not _is_drawing:
 			if power > 0.:
 				_is_drawing = true
-				drive_sound.stop()
 				draw_sound.play()
 	
 		if Input.is_action_just_released("draw") and _is_drawing:
 			_is_drawing = false
 			_create_trail()
 			draw_sound.stop()
-			drive_sound.play()
 
 		if _is_drawing:
 			trail.add_point(global_position)
@@ -61,13 +65,12 @@ func _process(delta: float) -> void:
 					_is_drawing = false
 					_create_trail()
 					draw_sound.stop()
-					drive_sound.play()
 		else:
 			if (global_position - prev_pos).length() > RECHARGE_DIST and power < 1.:
 				power += RECHARGE_AMOUNT
 				if power > 1: power = 1.
 	
-		pitch = clamp(0, 2, (global_position - prev_pos).length()/20. * 1.)
+		pitch = clampf((global_position - prev_pos).length()/20. + 1., 1., 2.)
 		drive_sound.pitch_scale = pitch
 		drive_sound.pitch_scale = pitch
 
@@ -79,8 +82,11 @@ func _create_trail() -> void:
 	trail = crack_scene.instantiate()
 	trails.add_child.call_deferred(trail)
 
+func fall() -> void:
+	damage(1)
+	die()
+
 func die() -> void:
-	hit(1)
 	_is_active = false
 	_is_drawing = false
 	
@@ -106,14 +112,33 @@ func respawn() -> void:
 	modulate.a = 1.
 	respawn_tween = get_tree().create_tween()
 	respawn_tween.tween_property(self, "global_position", Vector2.ZERO, 1)
+	respawn_tween.tween_property(spawn_point, "modulate:a", 1., 0.25)
 	respawn_tween.tween_property(self, "scale", Vector2(1, 1), 0.5)
+	respawn_tween.tween_property(spawn_point, "modulate:a", 0.2, 0.5)
 	respawn_tween.tween_callback(
 		func():
 			_is_active = true
 			drive_sound.play()
+			_activate_invincibility()
 	)
 	respawn_tween.tween_method(func(val): power = val, power, 1., 1. * (1 - power))
-	
+
 func hit(val) -> void:
+	if not _is_invincible:
+		damage(val)
+		_activate_invincibility()
+		EventManager.player_hit.emit()
+		$Camera2D.screen_shake(8, 0.5)
+
+func damage(val) -> void:
 	health -= val
-	EventManager.player_hit.emit()
+
+func _activate_invincibility(duration: float = 5) -> void:
+	_is_invincible = true
+	if itween: itween.kill()
+	itween = get_tree().create_tween()
+	for i in range(duration):
+		itween.tween_property(sprite.material, "shader_parameter/overlay_strength", 0.8, 0.2)
+		itween.tween_property(sprite.material, "shader_parameter/overlay_strength", 0.0, 0.2)
+
+	itween.chain().tween_callback(func(): _is_invincible = false)

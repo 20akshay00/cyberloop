@@ -1,14 +1,45 @@
-[gd_scene load_steps=7 format=3 uid="uid://cvua0fel5ydtv"]
+[gd_scene load_steps=12 format=3 uid="uid://cvua0fel5ydtv"]
 
 [ext_resource type="Script" uid="uid://bbted26h1x1jq" path="res://scripts/player.gd" id="1_i3pqv"]
 [ext_resource type="PackedScene" uid="uid://b646gc67qmx4m" path="res://scenes/crack.tscn" id="2_hqtel"]
 [ext_resource type="Texture2D" uid="uid://cqro5ie6mvm0b" path="res://assets/art/tron_bike_v1.png" id="3_sweqy"]
+[ext_resource type="Shader" uid="uid://6wfc0a2pnfog" path="res://scenes/invincibility.gdshader" id="3_tuyoq"]
 [ext_resource type="AudioStream" uid="uid://ct8hijshy0q6" path="res://assets/sfx/Bike Player Loop.ogg" id="4_dqkch"]
-[ext_resource type="AudioStream" uid="uid://d0ry13cf5xo8h" path="res://assets/sfx/Trail drawing.ogg" id="5_qlg0r"]
+[ext_resource type="AudioStream" uid="uid://dv3q0054cxkcs" path="res://assets/sfx/Trail drawing test 02.mp3" id="5_qlg0r"]
+[ext_resource type="Script" uid="uid://bppxyp6qk67th" path="res://scenes/custom_camera.gd" id="7_smehm"]
+[ext_resource type="Shader" uid="uid://dkjnohi6uda1r" path="res://scenes/crt.gdshader" id="8_ur7pv"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fjrip"]
+shader = ExtResource("3_tuyoq")
+shader_parameter/overlay_strength = 0.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_dwbse"]
 radius = 24.0
 height = 96.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_y4r1p"]
+shader = ExtResource("8_ur7pv")
+shader_parameter/overlay = false
+shader_parameter/scanlines_opacity = 0.192
+shader_parameter/scanlines_width = 0.008
+shader_parameter/grille_opacity = 0.078
+shader_parameter/resolution = Vector2(640, 480)
+shader_parameter/pixelate = false
+shader_parameter/roll = false
+shader_parameter/roll_speed = 3.03
+shader_parameter/roll_size = 0.269
+shader_parameter/roll_variation = 0.325
+shader_parameter/distort_intensity = 0.004
+shader_parameter/noise_opacity = 0.335
+shader_parameter/noise_speed = 0.0
+shader_parameter/static_noise_intensity = 0.06
+shader_parameter/aberration = 0.01
+shader_parameter/brightness = 1.21
+shader_parameter/discolor = true
+shader_parameter/warp_amount = 0.468
+shader_parameter/clip_warp = false
+shader_parameter/vignette_intensity = 0.2
+shader_parameter/vignette_opacity = 0.5
 
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 3
@@ -18,6 +49,7 @@ crack_scene = ExtResource("2_hqtel")
 metadata/_edit_group_ = true
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_fjrip")
 scale = Vector2(3, 3)
 texture = ExtResource("3_sweqy")
 
@@ -26,6 +58,28 @@ shape = SubResource("CapsuleShape2D_dwbse")
 
 [node name="DriveSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("4_dqkch")
+bus = &"PlayerBike"
 
 [node name="DrawSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("5_qlg0r")
+bus = &"PlayerBike"
+
+[node name="Camera2D" type="Camera2D" parent="."]
+limit_left = -2000
+limit_top = -2000
+limit_right = 2000
+limit_bottom = 2000
+position_smoothing_speed = 15.0
+script = ExtResource("7_smehm")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="Camera2D"]
+layer = 10
+
+[node name="ColorRect" type="ColorRect" parent="Camera2D/CanvasLayer"]
+material = SubResource("ShaderMaterial_y4r1p")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://d2lvnjcuwsoxy" path="res://scripts/droid.gd" id="1_3qyvh"]
 [ext_resource type="PackedScene" uid="uid://cx6x2pwoqp8mm" path="res://scenes/projectile.tscn" id="2_b6sar"]
-[ext_resource type="Texture2D" uid="uid://cenmwgs508d5e" path="res://assets/art/droid_one_v1.png" id="2_jmph3"]
+[ext_resource type="Texture2D" uid="uid://dn5pmbswkuxau" path="res://assets/art/droid_one_v1.png" id="2_jmph3"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jmph3"]
 radius = 1211.44

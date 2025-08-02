@@ -24,4 +24,3 @@ func play_effect(aud_stream: AudioStream, volume = 0.0, loops = false):
 		fx_player.finished.connect(fx_player.queue_free)
 	else:
 		return fx_player
-	

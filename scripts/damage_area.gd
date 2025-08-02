@@ -10,7 +10,10 @@ func _ready() -> void:
 		func(): 
 			_is_active = true
 			for body in get_overlapping_bodies():
-				body.die()
+				body.fall()
+				
+			for area in get_overlapping_areas():
+				if area.has_method("fall"): area.fall()
 	)
 
 func set_points(points:PackedVector2Array) -> void:
@@ -22,4 +25,4 @@ func set_points(points:PackedVector2Array) -> void:
 
 func _on_body_entered(body: Node2D) -> void:
 	if body and _is_active:
-		body.die()
+		body.fall()

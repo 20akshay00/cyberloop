@@ -48,7 +48,7 @@ func _on_body_entered(body: Node2D) -> void:
 			#print("hi")
 			#body.hit(1)
 
-func die() -> void:
+func fall() -> void:
 	if _is_active:
 		_is_active = false
 		if death_tween: death_tween.kill() 

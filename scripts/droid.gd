@@ -33,6 +33,9 @@ func _on_shoot_timer_timeout() -> void:
 		projectile.velocity = 900 * Vector2(cos(rotation), sin(rotation))
 		add_sibling(projectile)
 
+func fall() -> void:
+	die()
+
 func die() -> void:
 	if _is_active:
 		_is_active = false

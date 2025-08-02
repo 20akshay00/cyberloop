@@ -7,6 +7,9 @@ var _is_active = true
 @export var target: Player = null
 @onready var sprite: Node2D = $Sprite
 
+func fall() -> void:
+	die()
+
 func die() -> void:
 	if _is_active:
 		_is_active = false
@@ -22,10 +25,13 @@ func die() -> void:
 
 func _physics_process(delta: float) -> void:
 	if _is_active:
-		$NavigationAgent2D.target_position = target.global_position
-		var nav_point_dir := to_local($NavigationAgent2D.get_next_path_position()).normalized()
-		velocity = nav_point_dir * 500.
-		sprite.rotation = atan2(velocity.y, velocity.x) + PI/2
+		if (target.global_position - global_position).length() > 25.:
+			$NavigationAgent2D.target_position = target.global_position
+			var nav_point_dir := to_local($NavigationAgent2D.get_next_path_position()).normalized()
+			velocity = nav_point_dir * 500.
+			sprite.rotation = atan2(velocity.y, velocity.x) + PI/2
+		else:
+			velocity = Vector2.ZERO
 		
 		move_and_slide()
 

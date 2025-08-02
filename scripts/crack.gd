@@ -9,7 +9,7 @@ var intersect_idx: int = -1
 
 var shape_points: PackedVector2Array = []
 
-const spawn_side: float = 150.
+const spawn_side: float = 50.
 var spawn_area := PackedVector2Array(
 	[
 		Vector2(-spawn_side, -spawn_side), 

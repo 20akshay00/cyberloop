@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://c2yidqjagbkrb"]
+[gd_scene load_steps=13 format=3 uid="uid://c2yidqjagbkrb"]
 
 [ext_resource type="Script" uid="uid://d1e3vu4scial2" path="res://scenes/world.gd" id="1_qfnet"]
 [ext_resource type="Texture2D" uid="uid://c3284varj7i2o" path="res://assets/art/background_v2.png" id="2_4mrxx"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://clep1ecol48uk" path="res://scenes/enemy.tscn" id="4_i7141"]
 [ext_resource type="Texture2D" uid="uid://m7iwdw4caxjq" path="res://assets/art/stamina_bar_v1.png" id="4_w7kh3"]
 [ext_resource type="PackedScene" uid="uid://b1k1si4vlki42" path="res://scenes/droid.tscn" id="5_71j4m"]
+[ext_resource type="Texture2D" uid="uid://dsncjko7y1q8u" path="res://assets/art/spawn_point_v1.png" id="7_e3hyu"]
 [ext_resource type="Texture2D" uid="uid://douaksfsgn5wr" path="res://assets/art/health_stamina_bar_frame_v1.png" id="7_i7141"]
 [ext_resource type="PackedScene" uid="uid://0287u7bkbm56" path="res://scenes/proximity_mine.tscn" id="8_7r4gi"]
 
@@ -67,6 +68,11 @@ region_rect = Rect2(0, 0, 1920, 1080)
 
 [node name="Trails" type="Node2D" parent="."]
 
+[node name="Spawn" type="Sprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.2)
+scale = Vector2(4, 4)
+texture = ExtResource("7_e3hyu")
+
 [node name="ProximityMine" parent="." instance=ExtResource("8_7r4gi")]
 position = Vector2(471, 206)
 
@@ -79,16 +85,9 @@ position = Vector2(508, 1372)
 [node name="ProximityMine4" parent="." instance=ExtResource("8_7r4gi")]
 position = Vector2(508, 1372)
 
-[node name="Player" parent="." node_paths=PackedStringArray("trails") instance=ExtResource("3_qfnet")]
+[node name="Player" parent="." node_paths=PackedStringArray("trails", "spawn_point") instance=ExtResource("3_qfnet")]
 trails = NodePath("../Trails")
-
-[node name="Camera2D" type="Camera2D" parent="Player"]
-limit_left = -2000
-limit_top = -2000
-limit_right = 2000
-limit_bottom = 2000
-position_smoothing_enabled = true
-position_smoothing_speed = 15.0
+spawn_point = NodePath("../Spawn")
 
 [node name="Enemy" parent="." node_paths=PackedStringArray("target") instance=ExtResource("4_i7141")]
 position = Vector2(-215, 566)
