@@ -17,4 +17,3 @@ void fragment() {
 //void fragment() {
     //COLOR = vec4(UV, 0.0, 1.0); // adjust divisor for scale
 //}
-

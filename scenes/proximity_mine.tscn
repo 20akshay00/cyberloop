@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://bf667fh16sk6k" path="res://assets/art/explosion_anim_v2.png" id="5_n6sr2"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_lwjlu"]
-radius = 196.064
+radius = 117.0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7d6rn"]
 atlas = ExtResource("5_n6sr2")
@@ -79,7 +79,7 @@ scale = Vector2(3, 3)
 texture = ExtResource("2_fck1g")
 
 [node name="RangeSprite" type="Sprite2D" parent="."]
-scale = Vector2(5, 5)
+scale = Vector2(3, 3)
 texture = ExtResource("4_n8pgp")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

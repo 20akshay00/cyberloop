@@ -1,10 +1,10 @@
 [gd_scene load_steps=4 format=3 uid="uid://bj2wc68ug3gbv"]
 
 [ext_resource type="Script" uid="uid://c44v1ttblveco" path="res://scenes/health_pickup.gd" id="1_3p6mu"]
-[ext_resource type="Texture2D" uid="uid://yekrypfll38v" path="res://icon.svg" id="1_ciapp"]
+[ext_resource type="Texture2D" uid="uid://du5mxgijbi2ce" path="res://assets/art/health_icon_v1.png" id="2_3p6mu"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ciapp"]
-radius = 31.0644
+radius = 18.0278
 
 [node name="HealthPickup" type="Area2D"]
 collision_layer = 2
@@ -12,8 +12,8 @@ collision_mask = 4
 script = ExtResource("1_3p6mu")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("1_ciapp")
+scale = Vector2(4, 4)
+texture = ExtResource("2_3p6mu")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_ciapp")

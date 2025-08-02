@@ -47,6 +47,6 @@ texture_mode = 1
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 
 [node name="NavigationObstacle2D" type="NavigationObstacle2D" parent="."]
-affect_navigation_mesh = true
+radius = 50.0
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://clep1ecol48uk"]
+[gd_scene load_steps=6 format=3 uid="uid://clep1ecol48uk"]
 
 [ext_resource type="Script" uid="uid://cpcv4y15t1lwt" path="res://scripts/enemy.gd" id="1_4gyqm"]
 [ext_resource type="Texture2D" uid="uid://cqro5ie6mvm0b" path="res://assets/art/tron_bike_v1.png" id="2_4gyqm"]
@@ -8,19 +8,26 @@
 radius = 24.5
 height = 94.0
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_4ra3w"]
+radius = 24.0
+height = 94.0
+
 [node name="Enemy" type="CharacterBody2D"]
-collision_layer = 3
+collision_layer = 2
 collision_mask = 0
 script = ExtResource("1_4gyqm")
 metadata/_edit_group_ = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-0.5, -1)
+rotation = 1.5708
 shape = SubResource("CapsuleShape2D_4gyqm")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 avoidance_enabled = true
-radius = 20.0
+radius = 100.0
+time_horizon_agents = 0.01
+max_speed = 1000.0
 
 [node name="Timer" type="Timer" parent="."]
 wait_time = 0.1
@@ -38,5 +45,12 @@ modulate = Color(0.615698, 0.095638, 0.0100999, 1)
 scale = Vector2(3, 3)
 texture = ExtResource("3_4ra3w")
 
+[node name="HitArea" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitArea"]
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_4ra3w")
+
 [connection signal="velocity_computed" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_velocity_computed"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="body_entered" from="HitArea" to="." method="_on_hit_area_body_entered"]

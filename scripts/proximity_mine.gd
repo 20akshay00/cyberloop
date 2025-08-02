@@ -24,7 +24,7 @@ func explode() -> void:
 	tween.tween_property(self, "modulate:a", 0., 0.2)
 
 func _on_body_entered(body: Node2D) -> void:
-	if body is Player and not _is_exploding:
+	if (body is Player) and not _is_exploding:
 		explode()
 		body.hit(1)
 		#if explosion_timer.is_stopped():

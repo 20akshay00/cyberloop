@@ -15,13 +15,13 @@ var respawn_tween: Tween = null
 
 var MAX_POWER: float = 1.
 var power: float = 1.
-var POWER_COST: float = 0.001/5
+var POWER_COST: float = 0.0005/5
 
 var MAX_HEALTH: float = 3.
 var health: float = 5.
 
 var RECHARGE_DIST: float = 20.
-var RECHARGE_AMOUNT: float = 0.0025
+var RECHARGE_AMOUNT: float = 0.0035
 
 var prev_pos: Vector2 = Vector2.ZERO
 
@@ -31,12 +31,16 @@ var pitch: float = 0.
 
 @export var spawn_point: Sprite2D # absolutely horrid architecture!
 
+var closest_enemy_pos: Vector2 = Vector2.ZERO
+var closest_enemy_dist: float = 1e10
+
 # i-frames
 var _is_invincible: bool = false
 var itween: Tween = null
 
 func _ready() -> void:
 	_create_trail()
+	
 	drive_sound.play()
 	EventManager.shake_screen.connect(_shake_screen)
 
@@ -82,7 +86,16 @@ func _process(delta: float) -> void:
 		drive_sound.pitch_scale = pitch
 
 		prev_pos = global_position
-
+		
+		for enemy in get_tree().get_nodes_in_group("enemies"):
+			var dist = (enemy.global_position - global_position).length()
+			if dist < closest_enemy_dist:
+				closest_enemy_dist = dist
+				closest_enemy_pos = enemy.global_position - global_position
+			
+		$Pointer.rotation = lerp_angle($Pointer.rotation, atan2(closest_enemy_pos.y, closest_enemy_pos.x) - rotation, 0.1)
+		closest_enemy_dist= 1e10
+	
 func _create_trail() -> void:
 	if trail: trail.destroy()
 
@@ -90,7 +103,6 @@ func _create_trail() -> void:
 	trails.add_child.call_deferred(trail)
 
 func fall() -> void:
-	damage(1)
 	die()
 	AudioManager.play_effect(AudioManager.fall_sfx)
 
@@ -111,6 +123,7 @@ func die() -> void:
 	death_tween.set_parallel(false)
 	death_tween.tween_callback(
 		func(): 
+			damage(1)
 			respawn()
 			)
 			
@@ -136,12 +149,12 @@ func hit(val) -> void:
 	if not _is_invincible:
 		damage(val)
 		_activate_invincibility()
-		EventManager.player_health_changed.emit()
 		AudioManager.play_effect(AudioManager.player_hit_sfx)
 		_shake_screen()
 
 func damage(val) -> void:
 	health -= val
+	EventManager.player_health_changed.emit()
 
 func _activate_invincibility(duration: float = 3) -> void:
 	_is_invincible = true
@@ -157,5 +170,16 @@ func _shake_screen() -> void:
 	$Camera2D.screen_shake(8, 0.5)
 
 func add_health(val: float) -> void:
-	EventManager.player_health_changed.emit()
 	health += val
+	EventManager.player_health_changed.emit()
+
+func death() -> void:
+	_is_active = false
+	_is_drawing = false
+	draw_sound.stop()
+	drive_sound.stop()
+	$CollisionShape2D.set_deferred("disabled", true)	
+	if death_tween: death_tween.kill()
+	death_tween = get_tree().create_tween()
+	death_tween.tween_property(sprite, "modulate:a", 0., 1.0)
+	death_tween.tween_callback(func(): EventManager.game_over.emit())

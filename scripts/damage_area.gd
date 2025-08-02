@@ -5,7 +5,6 @@ var _is_active: bool = false
 var fade_tween: Tween = null
 
 func _ready() -> void:
-	EventManager.hole_created.emit()
 	AudioManager.play_effect(AudioManager.loop_created_sfx, 10.)
 	get_tree().create_timer(0.3).timeout.connect(
 		func(): 
@@ -31,6 +30,7 @@ func set_points(points:PackedVector2Array) -> void:
 	$Line2D.points = points
 	$Polygon2D.polygon = points
 	$NavigationObstacle2D.vertices = points
+	EventManager.hole_created.emit()
 
 	$Polygon2D.uv = generate_uvs($Polygon2D.polygon)
 	

@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://c2yidqjagbkrb"]
+[gd_scene load_steps=15 format=3 uid="uid://c2yidqjagbkrb"]
 
 [ext_resource type="Script" uid="uid://d1e3vu4scial2" path="res://scenes/world.gd" id="1_qfnet"]
 [ext_resource type="Texture2D" uid="uid://c3284varj7i2o" path="res://assets/art/background_v2.png" id="2_4mrxx"]
@@ -8,15 +8,16 @@
 [ext_resource type="PackedScene" uid="uid://clep1ecol48uk" path="res://scenes/enemy.tscn" id="4_i7141"]
 [ext_resource type="Texture2D" uid="uid://m7iwdw4caxjq" path="res://assets/art/stamina_bar_v1.png" id="4_w7kh3"]
 [ext_resource type="PackedScene" uid="uid://b1k1si4vlki42" path="res://scenes/droid.tscn" id="5_71j4m"]
+[ext_resource type="PackedScene" uid="uid://sk45e7elu8k" path="res://scenes/retry_ui.tscn" id="6_jhx03"]
 [ext_resource type="Texture2D" uid="uid://dsncjko7y1q8u" path="res://assets/art/spawn_point_v1.png" id="7_e3hyu"]
 [ext_resource type="Texture2D" uid="uid://douaksfsgn5wr" path="res://assets/art/health_stamina_bar_frame_v1.png" id="7_i7141"]
 [ext_resource type="PackedScene" uid="uid://0287u7bkbm56" path="res://scenes/proximity_mine.tscn" id="8_7r4gi"]
 [ext_resource type="PackedScene" uid="uid://bj2wc68ug3gbv" path="res://scenes/health_pickup.tscn" id="12_q5onr"]
 
-[sub_resource type="NavigationPolygon" id="NavigationPolygon_71j4m"]
-vertices = PackedVector2Array(2325, 1657.06, -2219.03, 1685.93, -2228.96, -1515.01, 2325, -1519.98)
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_o8fc1"]
+vertices = PackedVector2Array(6326.88, 6065.89, -5918.07, 5940.1, -6011.92, -6097.01, 6184.11, -6115.98)
 polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
-outlines = Array[PackedVector2Array]([PackedVector2Array(-2239, -1525, -2229, 1696, 2335, 1667, 2335, -1530)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-6022, -6107, -5928, 5950, 6337, 6076, 6194, -6126)])
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_qfnet")
@@ -56,6 +57,8 @@ step = 0.001
 value = 1.0
 texture_progress = ExtResource("4_w7kh3")
 
+[node name="RetryUI" parent="." instance=ExtResource("6_jhx03")]
+
 [node name="Parallax2D" type="Parallax2D" parent="."]
 repeat_size = Vector2(960, 960)
 repeat_times = 3
@@ -92,19 +95,31 @@ position = Vector2(508, 1372)
 [node name="ProximityMine4" parent="." instance=ExtResource("8_7r4gi")]
 position = Vector2(508, 1372)
 
-[node name="Player" parent="." node_paths=PackedStringArray("trails", "spawn_point") instance=ExtResource("3_qfnet")]
+[node name="Player" parent="." node_paths=PackedStringArray("trails", "spawn_point") groups=["player"] instance=ExtResource("3_qfnet")]
 trails = NodePath("../Trails")
 spawn_point = NodePath("../Spawn")
 
-[node name="Enemy" parent="." node_paths=PackedStringArray("target") instance=ExtResource("4_i7141")]
-position = Vector2(-215, 566)
-target = NodePath("../Player")
+[node name="Enemy" parent="." instance=ExtResource("4_i7141")]
+position = Vector2(1379, 874)
+
+[node name="Enemy2" parent="." instance=ExtResource("4_i7141")]
+position = Vector2(2660, -494)
+
+[node name="Enemy3" parent="." instance=ExtResource("4_i7141")]
+position = Vector2(-39, 1997)
+
+[node name="Enemy4" parent="." instance=ExtResource("4_i7141")]
+position = Vector2(3089, 379)
+
+[node name="Enemy5" parent="." instance=ExtResource("4_i7141")]
+position = Vector2(1269, 2210)
 
 [node name="Droid" parent="." instance=ExtResource("5_71j4m")]
 position = Vector2(1829, 569)
 
 [node name="Droid2" parent="." instance=ExtResource("5_71j4m")]
-position = Vector2(-662, 32)
+position = Vector2(3827, 2548)
 
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
-navigation_polygon = SubResource("NavigationPolygon_71j4m")
+position = Vector2(-13, -348)
+navigation_polygon = SubResource("NavigationPolygon_o8fc1")
