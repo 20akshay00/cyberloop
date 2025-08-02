@@ -19,9 +19,13 @@ var spawn_area := PackedVector2Array(
 		]
 )
 
+const VALID_COLOR := Color("#79f5f6")
+const ERR_COLOR := Color("#f64747")
+var error_tween: Tween = null
+
 func _ready() -> void:
 	_is_orphan = false
-	
+
 func _process(delta: float) -> void:
 	if _is_orphan:
 		if get_point_count() > 0:
@@ -41,17 +45,19 @@ func _process(delta: float) -> void:
 		shape_points = points.slice(intersect_idx, points.size()-1)
 		
 		if calculate_area(shape_points) > 5000:
-			if Geometry2D.intersect_polygons(shape_points, spawn_area).size() == 0:
-				var damage_area = damage_area_scene.instantiate()
-				damage_area.set_points(shape_points)
-				add_sibling(damage_area)
+			if (Geometry2D.intersect_polygons(shape_points, spawn_area).size() == 0) and (Geometry2D.decompose_polygon_in_convex(shape_points).size() > 0):
+					var damage_area = damage_area_scene.instantiate()
+					damage_area.set_points(shape_points)
+					add_sibling(damage_area)
 				
-				var crack = self.duplicate()
-				crack.points = points.slice(0, intersect_idx)
-				add_sibling(crack)
-				crack.destroy()
-				clear_points()
-
+					var crack = self.duplicate()
+					crack.points = points.slice(0, intersect_idx)
+					add_sibling(crack)
+					crack.destroy()
+					clear_points()
+			else:
+				_throw_error()
+				
 		intersect_idx = -1
 
 func destroy():
@@ -66,3 +72,11 @@ func calculate_area(mesh_vertices: PackedVector2Array) -> float:
 		result += mesh_vertices[q].cross(mesh_vertices[p])
 	
 	return abs(result) * 0.5
+
+func _throw_error() -> void:
+	EventManager.shake_screen.emit()
+	AudioManager.play_effect(AudioManager.loop_invalid_sfx, 10)
+	if error_tween: error_tween.kill()
+	error_tween = get_tree().create_tween()
+	error_tween.tween_property(self, "default_color", ERR_COLOR, 0.25)
+	error_tween.tween_property(self, "default_color", VALID_COLOR, 0.25)

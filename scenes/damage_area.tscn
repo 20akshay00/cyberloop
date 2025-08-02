@@ -1,11 +1,29 @@
-[gd_scene load_steps=5 format=3 uid="uid://db2hesmx6bfb7"]
+[gd_scene load_steps=9 format=3 uid="uid://db2hesmx6bfb7"]
 
 [ext_resource type="Script" uid="uid://5kv1lp8guydd" path="res://scripts/damage_area.gd" id="1_5frsa"]
+[ext_resource type="Shader" uid="uid://cealjes6kiu0i" path="res://scenes/dissolve.gdshader" id="2_a2a3j"]
 [ext_resource type="Texture2D" uid="uid://3ss36d8nsgh0" path="res://assets/art/hole_texture_three_v1.png" id="2_fhj2k"]
 [ext_resource type="Shader" uid="uid://muj7da7x0o4v" path="res://scenes/damage_area_border.gdshader" id="3_c2uvg"]
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_a2a3j"]
+noise_type = 4
+frequency = 0.0071
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_a2a3j"]
+noise = SubResource("FastNoiseLite_a2a3j")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_oamld"]
+resource_local_to_scene = true
+shader = ExtResource("2_a2a3j")
+shader_parameter/dissolve_texture = SubResource("NoiseTexture2D_a2a3j")
+shader_parameter/dissolve_value = 1.0
+shader_parameter/polygon_size = Vector2(0, 0)
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_a2a3j"]
 shader = ExtResource("3_c2uvg")
+shader_parameter/freq = 2.0
+shader_parameter/lo = 0.3
+shader_parameter/hi = 1.0
 
 [node name="DamageArea" type="Area2D"]
 collision_layer = 0
@@ -14,8 +32,8 @@ script = ExtResource("1_5frsa")
 
 [node name="Polygon2D" type="Polygon2D" parent="."]
 texture_repeat = 2
+material = SubResource("ShaderMaterial_oamld")
 texture = ExtResource("2_fhj2k")
-texture_scale = Vector2(4, 4)
 
 [node name="Line2D" type="Line2D" parent="."]
 texture_repeat = 2

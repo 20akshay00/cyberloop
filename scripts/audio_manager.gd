@@ -1,6 +1,12 @@
 extends AudioStreamPlayer2D
 
 var loop_created_sfx := load("res://assets/sfx/Loop Created.mp3")
+var fall_sfx := load("res://assets/sfx/Spiral long.mp3")
+var loop_invalid_sfx := load("res://assets/sfx/Cannot Form Loop.mp3")
+var power_full_sfx := load("res://assets/sfx/Power full.mp3")
+var draw_start_sfx := load("res://assets/sfx/Trail Draw Start.mp3")
+var power_empty_sfx := load("res://assets/sfx/Power Empty.mp3")
+var player_hit_sfx := load("res://assets/sfx/Player Hit 2.mp3")
 
 func _play_music(music: AudioStream, volume = -7):
 	if stream == music:

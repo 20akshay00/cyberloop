@@ -38,10 +38,13 @@ var itween: Tween = null
 func _ready() -> void:
 	_create_trail()
 	drive_sound.play()
+	EventManager.shake_screen.connect(_shake_screen)
 
 func _process(delta: float) -> void:
 	if _is_active:
-		global_position = lerp(position, get_global_mouse_position(), 1.0 - pow(0.965, delta * 60))
+##		global_position = lerp(position, get_global_mouse_position(), 1.0 - pow(0.965, delta * 60))
+
+		global_position = lerp(position, get_global_mouse_position(), 1.0 - pow(0.95, delta * 60))
 		
 		dir = get_global_mouse_position() - position
 		rotation = lerp_angle(rotation, atan2(dir.y, dir.x) + PI/2, 0.2)
@@ -50,7 +53,8 @@ func _process(delta: float) -> void:
 			if power > 0.:
 				_is_drawing = true
 				draw_sound.play()
-	
+				#AudioManager.play_effect(AudioManager.draw_start_sfx, 10)
+
 		if Input.is_action_just_released("draw") and _is_drawing:
 			_is_drawing = false
 			_create_trail()
@@ -61,6 +65,7 @@ func _process(delta: float) -> void:
 			if trail.get_point_count() > 2:
 				power -= (global_position - prev_pos).length() * POWER_COST
 				if power < 0.:
+					AudioManager.play_effect(AudioManager.power_empty_sfx, 10)
 					power = 0.
 					_is_drawing = false
 					_create_trail()
@@ -68,8 +73,10 @@ func _process(delta: float) -> void:
 		else:
 			if (global_position - prev_pos).length() > RECHARGE_DIST and power < 1.:
 				power += RECHARGE_AMOUNT
-				if power > 1: power = 1.
-	
+				if power > 1: 
+					power = 1.
+					AudioManager.play_effect(AudioManager.power_full_sfx, 10)
+
 		pitch = clampf((global_position - prev_pos).length()/20. + 1., 1., 2.)
 		drive_sound.pitch_scale = pitch
 		drive_sound.pitch_scale = pitch
@@ -85,6 +92,7 @@ func _create_trail() -> void:
 func fall() -> void:
 	damage(1)
 	die()
+	AudioManager.play_effect(AudioManager.fall_sfx)
 
 func die() -> void:
 	_is_active = false
@@ -92,7 +100,7 @@ func die() -> void:
 	
 	draw_sound.stop()
 	drive_sound.stop()
-
+	$CollisionShape2D.set_deferred("disabled", true)
 	if death_tween: death_tween.kill() 
 	
 	death_tween = get_tree().create_tween()
@@ -120,6 +128,7 @@ func respawn() -> void:
 			_is_active = true
 			drive_sound.play()
 			_activate_invincibility()
+			$CollisionShape2D.set_deferred("disabled", false)
 	)
 	respawn_tween.tween_method(func(val): power = val, power, 1., 1. * (1 - power))
 
@@ -128,7 +137,8 @@ func hit(val) -> void:
 		damage(val)
 		_activate_invincibility()
 		EventManager.player_hit.emit()
-		$Camera2D.screen_shake(8, 0.5)
+		AudioManager.play_effect(AudioManager.player_hit_sfx)
+		_shake_screen()
 
 func damage(val) -> void:
 	health -= val
@@ -142,3 +152,6 @@ func _activate_invincibility(duration: float = 5) -> void:
 		itween.tween_property(sprite.material, "shader_parameter/overlay_strength", 0.0, 0.2)
 
 	itween.chain().tween_callback(func(): _is_invincible = false)
+
+func _shake_screen() -> void:
+	$Camera2D.screen_shake(8, 0.5)
