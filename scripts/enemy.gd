@@ -10,8 +10,8 @@ var target: Player = null
 var run: bool = false
 var _state: bool = true
 
-var chase_speed: float = 1400
-var run_speed: float = 700
+var chase_speed: float = 800
+var run_speed: float = 500
 
 func _ready() -> void:
 	target = get_tree().get_nodes_in_group("player")[0]
@@ -22,6 +22,7 @@ func fall() -> void:
 
 func die() -> void:
 	if _is_active:
+		EventManager.enemy_died.emit()
 		_is_active = false
 		process_mode = Node.PROCESS_MODE_DISABLED
 		velocity = Vector2.ZERO
@@ -40,9 +41,9 @@ func _physics_process(delta: float) -> void:
 		$NavigationAgent2D.target_position = target.global_position
 		var nav_point_dir := to_local($NavigationAgent2D.get_next_path_position())
 		
-		if (target.trail.get_point_count() > 20 and target.velocity.length() > 1500.) or target._is_invincible:
+		if (target.trail.get_point_count() > 10 and target.velocity.length() > 1100.):
 			if _state:
-				run = true if randf() > 0.2 else false
+				run = true if randf() > 0.7 else false
 				_state = false
 			
 			if run: 

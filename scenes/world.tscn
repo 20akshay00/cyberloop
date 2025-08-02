@@ -193,4 +193,9 @@ position = Vector2(3827, 2548)
 position = Vector2(-57, -507)
 navigation_polygon = SubResource("NavigationPolygon_o8fc1")
 
+[node name="RunTimer" type="Timer" parent="."]
+wait_time = 30.0
+autostart = true
+
 [connection signal="pressed" from="UI/RetryButton" to="UI" method="_on_retry_button_pressed"]
+[connection signal="timeout" from="RunTimer" to="." method="_on_run_timer_timeout"]

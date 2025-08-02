@@ -40,6 +40,7 @@ func fall() -> void:
 
 func die() -> void:
 	if _is_active:
+		EventManager.enemy_died.emit()
 		_is_active = false
 		if death_tween: death_tween.kill() 
 		

@@ -9,6 +9,7 @@ var start_tween: Tween = null
 
 func _ready() -> void:
 	EventManager.player_health_changed.connect(_on_player_health_changed)
+	
 	if start_tween: start_tween.kill()
 	start_tween = get_tree().create_tween()
 	start_tween.set_loops()
@@ -34,3 +35,9 @@ func start() -> void:
 
 func _on_retry_button_pressed() -> void:
 	TransitionManager.reload_scene()
+	
+func set_high_score(score: int):
+	$VBoxContainer/HighScore.text = "High score: " + str(score)
+
+func set_score(score: int):
+	$VBoxContainer/CurrentScore.text = "Score: " + str(score)

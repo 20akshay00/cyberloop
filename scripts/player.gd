@@ -19,8 +19,8 @@ var POWER_COST: float = 0.0005/5
 var MAX_HEALTH: float = 3.
 var health: float = 5.
 
-var RECHARGE_DIST: float = 30.
-var RECHARGE_AMOUNT: float = 0.0025
+var RECHARGE_DIST: float = 25.
+var RECHARGE_AMOUNT: float = 0.0045
 
 var prev_pos: Vector2 = Vector2.ZERO
 
@@ -37,7 +37,7 @@ var closest_enemy_dist: float = 1e10
 var _is_invincible: bool = false
 var itween: Tween = null
 
-@export var min_speed: float = 1000.0
+@export var min_speed: float = 700.0
 @export var max_speed: float = 2500.0
 @export var rotation_speed: float = 10.0  # radians per second
 @export var sensitivity: float = 2.5  # How strongly distance affects speed
@@ -54,7 +54,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if _is_active:
 		var target_pos = get_global_mouse_position()
-		if (target_pos - global_position).length() > 15.0:
+		if (target_pos - global_position).length() > 10.0:
 			mouse_dir = target_pos - global_position
 			mouse_distance = mouse_dir.length()
 
@@ -98,6 +98,11 @@ func _process(delta: float) -> void:
 		drive_sound.pitch_scale = pitch
 
 		prev_pos = global_position
+		
+		if get_tree().get_nodes_in_group("enemies").size() > 0:
+			$Pointer.show()
+		else:
+			$Pointer.hide()
 		
 		for enemy in get_tree().get_nodes_in_group("enemies"):
 			var dist = (enemy.global_position - global_position).length()
@@ -167,7 +172,8 @@ func hit(val) -> void:
 func damage(val) -> void:
 	health -= val
 	EventManager.player_health_changed.emit()
-
+	EventManager.player_hit.emit()
+	
 func _activate_invincibility(duration: float = 3) -> void:
 	_is_invincible = true
 	if itween: itween.kill()

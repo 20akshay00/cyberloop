@@ -8,7 +8,7 @@
 [ext_resource type="AudioStream" uid="uid://dweafpu01vixb" path="res://assets/sfx/Trail drawing 2.ogg" id="6_smehm"]
 [ext_resource type="Script" uid="uid://bppxyp6qk67th" path="res://scenes/custom_camera.gd" id="7_smehm"]
 [ext_resource type="Shader" uid="uid://dkjnohi6uda1r" path="res://scenes/crt.gdshader" id="8_ur7pv"]
-[ext_resource type="Texture2D" uid="uid://bt23ntevqxn2b" path="res://assets/art/settings_icon_v1.png" id="9_ur7pv"]
+[ext_resource type="Texture2D" uid="uid://dqbjojri6flgj" path="res://assets/art/arrow_v1.png" id="9_ur7pv"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fjrip"]
 shader = ExtResource("3_tuyoq")
@@ -89,5 +89,6 @@ metadata/_edit_use_anchors_ = true
 [node name="Pointer" type="Node2D" parent="."]
 
 [node name="Sprite2D" type="Sprite2D" parent="Pointer"]
-position = Vector2(70, 0)
+position = Vector2(69.49, 0)
+rotation = 0.785398
 texture = ExtResource("9_ur7pv")
