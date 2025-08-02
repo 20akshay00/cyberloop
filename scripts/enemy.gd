@@ -67,11 +67,12 @@ func hit(val) -> void:
 	die()
 
 func _on_hit_area_body_entered(body: Node2D) -> void:
-	if body is Player:
+	if body is Player and _is_active:
 		body.hit(1)
 		_is_active = false
 		$DeathSound.play()
 		$Sprite.hide()
+		
 		var death_anim = $DeathAnimation
 		death_anim.reparent(get_parent())
 		death_anim.animation_finished.connect(func(): death_anim.queue_free())

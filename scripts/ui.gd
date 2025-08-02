@@ -6,6 +6,7 @@ extends CanvasLayer
 
 var tween: Tween = null
 var start_tween: Tween = null
+var title_tween: Tween = null
 
 func _ready() -> void:
 	EventManager.player_health_changed.connect(_on_player_health_changed)
@@ -15,6 +16,12 @@ func _ready() -> void:
 	start_tween.set_loops()
 	start_tween.tween_property($ClickToStart, "modulate:a", 0.2, 1.)
 	start_tween.tween_property($ClickToStart, "modulate:a", 1, 1.)
+	
+	if title_tween: title_tween.kill()
+	title_tween = get_tree().create_tween()
+	title_tween.set_loops()
+	title_tween.tween_property($Title, "scale", Vector2(1.4, 1.4), 1.)
+	title_tween.tween_property($Title, "scale", Vector2(1.3, 1.3), 1.)
 	
 func _process(delta: float) -> void:
 	power_bar.value = player.power
@@ -32,6 +39,10 @@ func start() -> void:
 	if start_tween: start_tween.kill()
 	start_tween = get_tree().create_tween()
 	start_tween.tween_property($ClickToStart, "modulate:a", 0., 0.2)
+
+	if title_tween: title_tween.kill()
+	title_tween = get_tree().create_tween()
+	title_tween.tween_property($Title, "modulate:a", 0., 0.2)
 
 func _on_retry_button_pressed() -> void:
 	TransitionManager.reload_scene()

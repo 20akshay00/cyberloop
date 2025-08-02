@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://c2yidqjagbkrb"]
+[gd_scene load_steps=18 format=3 uid="uid://c2yidqjagbkrb"]
 
 [ext_resource type="Script" uid="uid://d1e3vu4scial2" path="res://scenes/world.gd" id="1_qfnet"]
 [ext_resource type="Texture2D" uid="uid://c3284varj7i2o" path="res://assets/art/background_v2.png" id="2_4mrxx"]
@@ -14,6 +14,7 @@
 [ext_resource type="Texture2D" uid="uid://douaksfsgn5wr" path="res://assets/art/health_stamina_bar_frame_v1.png" id="7_i7141"]
 [ext_resource type="PackedScene" uid="uid://0287u7bkbm56" path="res://scenes/proximity_mine.tscn" id="8_7r4gi"]
 [ext_resource type="FontFile" uid="uid://cmmi1q3juj7cv" path="res://assets/fonts/PixelOperator-Bold.ttf" id="8_lakw3"]
+[ext_resource type="Texture2D" uid="uid://b7agburjl2awr" path="res://assets/art/cyberlooop_title_v1.png" id="9_dss4m"]
 [ext_resource type="PackedScene" uid="uid://bj2wc68ug3gbv" path="res://scenes/health_pickup.tscn" id="12_q5onr"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_o8fc1"]
@@ -128,6 +129,20 @@ modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 theme_override_constants/separation = 40
 
+[node name="Title" type="TextureRect" parent="UI"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -245.0
+offset_top = 200.0
+offset_right = 246.0
+offset_bottom = 268.0
+grow_horizontal = 2
+scale = Vector2(1.3, 1.3)
+pivot_offset = Vector2(245, 34)
+texture = ExtResource("9_dss4m")
+stretch_mode = 5
+
 [node name="Parallax2D" type="Parallax2D" parent="."]
 repeat_size = Vector2(960, 960)
 repeat_times = 3
@@ -181,7 +196,7 @@ position = Vector2(-289, 720)
 position = Vector2(654, 684)
 
 [node name="Droid" parent="." instance=ExtResource("5_71j4m")]
-position = Vector2(1514, 471)
+position = Vector2(2387, 582)
 
 [node name="Droid2" parent="." instance=ExtResource("5_71j4m")]
 position = Vector2(3827, 2548)
@@ -189,6 +204,7 @@ position = Vector2(3827, 2548)
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
 position = Vector2(-57, -507)
 navigation_polygon = SubResource("NavigationPolygon_o8fc1")
+metadata/_edit_lock_ = true
 
 [node name="RunTimer" type="Timer" parent="."]
 wait_time = 30.0
