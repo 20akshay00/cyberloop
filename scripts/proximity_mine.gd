@@ -11,7 +11,7 @@ var _is_active = true
 
 func explode() -> void:
 	_is_exploding = true
-	AudioManager.play_effect(AudioManager.explosion_sfx)
+	$ExplosionSound.play()
 	$Explosion.show()
 	$Explosion.play("explode")	
 	$Explosion.animation_finished.connect(

@@ -43,7 +43,7 @@ func _physics_process(delta: float) -> void:
 		
 		if (target.trail.get_point_count() > 10 and target.velocity.length() > 1100.):
 			if _state:
-				run = true if randf() > 0.7 else false
+				run = true if randf() > 0.4 else false
 				_state = false
 			
 			if run: 
@@ -53,7 +53,10 @@ func _physics_process(delta: float) -> void:
 		else:
 			_state = true
 			$NavigationAgent2D.set_velocity(nav_point_dir.normalized() * 1100.)
-
+	else:
+		velocity = Vector2.ZERO
+		move_and_slide()
+	
 func _on_navigation_agent_2d_velocity_computed(safe_velocity: Vector2) -> void:
 	velocity = safe_velocity
 	sprite.rotation = atan2(velocity.y, velocity.x) + PI/2
@@ -66,5 +69,11 @@ func hit(val) -> void:
 func _on_hit_area_body_entered(body: Node2D) -> void:
 	if body is Player:
 		body.hit(1)
-		queue_free()
-		#AudioManager.play_effect(AudioManager.explosion_sfx).finished.connect(func(): queue_free())
+		_is_active = false
+		$DeathSound.play()
+		$Sprite.hide()
+		var death_anim = $DeathAnimation
+		death_anim.reparent(get_parent())
+		death_anim.animation_finished.connect(func(): death_anim.queue_free())
+		death_anim.show()
+		death_anim.play()

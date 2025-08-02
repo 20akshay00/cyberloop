@@ -26,6 +26,12 @@ var prev_pos: Vector2 = Vector2.ZERO
 
 @onready var drive_sound := $DriveSound
 @onready var draw_sound := $DrawSound
+@onready var power_full_sound := $PowerFullSound
+@onready var power_empty_sound := $PowerDepletedSound
+@onready var hit_sound := $HitSound
+@onready var draw_start_sound := $DrawStartSound
+@onready var fall_sound := $FallSound
+
 var pitch: float = 0.
 
 @export var spawn_point: Sprite2D # absolutely horrid architecture!
@@ -69,7 +75,7 @@ func _process(delta: float) -> void:
 			if power > 0.:
 				_is_drawing = true
 				draw_sound.play()
-				AudioManager.play_effect(AudioManager.draw_start_sfx, 10)
+				#draw_start_sound.play()
 
 		if Input.is_action_just_released("draw") and _is_drawing:
 			_is_drawing = false
@@ -81,7 +87,7 @@ func _process(delta: float) -> void:
 			if trail.get_point_count() > 2:
 				power -= (global_position - prev_pos).length() * POWER_COST
 				if power < 0.:
-					AudioManager.play_effect(AudioManager.power_empty_sfx, 10)
+					power_empty_sound.play()
 					power = 0.
 					_is_drawing = false
 					_create_trail()
@@ -91,7 +97,7 @@ func _process(delta: float) -> void:
 				power += RECHARGE_AMOUNT
 				if power > 1: 
 					power = 1.
-					AudioManager.play_effect(AudioManager.power_full_sfx, 10)
+					power_full_sound.play()
 
 		pitch = clampf((global_position - prev_pos).length()/20. + 1., 1., 2.)
 		drive_sound.pitch_scale = pitch
@@ -121,7 +127,7 @@ func _create_trail() -> void:
 
 func fall() -> void:
 	die()
-	AudioManager.play_effect(AudioManager.fall_sfx)
+	fall_sound.play()
 
 func die() -> void:
 	_is_active = false
@@ -166,7 +172,7 @@ func hit(val) -> void:
 	if not _is_invincible:
 		damage(val)
 		_activate_invincibility()
-		AudioManager.play_effect(AudioManager.player_hit_sfx)
+		hit_sound.play()
 		_shake_screen()
 
 func damage(val) -> void:
@@ -192,12 +198,13 @@ func add_health(val: float) -> void:
 	EventManager.player_health_changed.emit()
 
 func death() -> void:
+	$Sprite2D.hide()
+	$DeathSound.play()
+	$DeathAnimation.show()
+	$DeathAnimation.play()
 	_is_active = false
 	_is_drawing = false
 	draw_sound.stop()
 	drive_sound.stop()
-	$CollisionShape2D.set_deferred("disabled", true)	
-	if death_tween: death_tween.kill()
-	death_tween = get_tree().create_tween()
-	death_tween.tween_property(sprite, "modulate:a", 0., 1.0)
-	death_tween.tween_callback(func(): EventManager.game_over.emit())
+	$CollisionShape2D.set_deferred("disabled", true)
+	$DeathAnimation.animation_finished.connect(func(): EventManager.game_over.emit())

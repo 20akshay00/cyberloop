@@ -75,7 +75,7 @@ func calculate_area(mesh_vertices: PackedVector2Array) -> float:
 
 func _throw_error() -> void:
 	EventManager.shake_screen.emit()
-	AudioManager.play_effect(AudioManager.loop_invalid_sfx, 10)
+	AudioManager.play_effect(AudioManager.loop_invalid_sfx)
 	if error_tween: error_tween.kill()
 	error_tween = get_tree().create_tween()
 	error_tween.tween_property(self, "default_color", ERR_COLOR, 0.25)

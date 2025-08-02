@@ -1,10 +1,11 @@
-[gd_scene load_steps=15 format=3 uid="uid://0287u7bkbm56"]
+[gd_scene load_steps=16 format=3 uid="uid://0287u7bkbm56"]
 
 [ext_resource type="Script" uid="uid://25tlmv4ec75s" path="res://scripts/proximity_mine.gd" id="1_fck1g"]
 [ext_resource type="Texture2D" uid="uid://b8e51tbtfk7x3" path="res://assets/art/proximity_mine_v1.png" id="1_lwjlu"]
 [ext_resource type="Texture2D" uid="uid://bkhwwa5xadhn4" path="res://assets/art/proximity_mine_light_v1.png" id="2_fck1g"]
 [ext_resource type="Texture2D" uid="uid://w6kplvfdaudc" path="res://assets/art/proximity_mine_range_line_v1.png" id="4_n8pgp"]
 [ext_resource type="Texture2D" uid="uid://bf667fh16sk6k" path="res://assets/art/explosion_anim_v2.png" id="5_n6sr2"]
+[ext_resource type="AudioStream" uid="uid://b4ax4tm3dvanm" path="res://assets/sfx/Explosion.mp3" id="6_7d6rn"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_lwjlu"]
 radius = 117.0
@@ -93,6 +94,10 @@ animation = &"explode"
 
 [node name="ExplosionTimer" type="Timer" parent="."]
 wait_time = 0.1
+
+[node name="ExplosionSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("6_7d6rn")
+bus = &"Misc"
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_body_exited"]

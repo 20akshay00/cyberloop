@@ -169,22 +169,19 @@ trails = NodePath("../Trails")
 spawn_point = NodePath("../Spawn")
 
 [node name="Enemy" parent="." instance=ExtResource("4_i7141")]
-position = Vector2(1379, 874)
+position = Vector2(1306, 971)
 
 [node name="Enemy2" parent="." instance=ExtResource("4_i7141")]
-position = Vector2(2660, -494)
+position = Vector2(943, -93)
 
 [node name="Enemy3" parent="." instance=ExtResource("4_i7141")]
-position = Vector2(-39, 1997)
+position = Vector2(-289, 720)
 
 [node name="Enemy4" parent="." instance=ExtResource("4_i7141")]
-position = Vector2(3089, 379)
-
-[node name="Enemy5" parent="." instance=ExtResource("4_i7141")]
-position = Vector2(1269, 2210)
+position = Vector2(654, 684)
 
 [node name="Droid" parent="." instance=ExtResource("5_71j4m")]
-position = Vector2(1829, 569)
+position = Vector2(1514, 471)
 
 [node name="Droid2" parent="." instance=ExtResource("5_71j4m")]
 position = Vector2(3827, 2548)

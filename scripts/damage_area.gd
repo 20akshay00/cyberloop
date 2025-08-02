@@ -5,7 +5,7 @@ var _is_active: bool = false
 var fade_tween: Tween = null
 
 func _ready() -> void:
-	AudioManager.play_effect(AudioManager.loop_created_sfx, 10.)
+	AudioManager.play_effect(AudioManager.loop_created_sfx)
 	get_tree().create_timer(0.3).timeout.connect(
 		func(): 
 			_is_active = true
