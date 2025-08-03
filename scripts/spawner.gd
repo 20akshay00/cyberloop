@@ -111,13 +111,9 @@ func _change_wave() -> void:
 		var pos = _start_droid_spawn()
 		_start_mine_spawn(pos)
 
-func check_enemies() -> void:
-	enemy_count -= 1
-	if enemy_count <= 0 and spawn_complete:
-		get_tree().create_timer(3).timeout.connect(func(): _change_wave())
-
 func _check_enemies() -> void:
-	call_deferred("check_enemies")
+	$CheckTimer.start()
+
 
 func _start_enemy_spawn() -> void:
 	for i in enemy_count:
@@ -164,8 +160,13 @@ func _spawn_mine(exclude: Array[Vector2] = []) -> Vector2:
 	mines.add_child(mine)
 	mine.global_position = _spawn_pos_random(exclude)
 	return mine.global_position
-	
+
 func _spawn_pickup(pos: Vector2) -> void:
 	var health = pickup_scene.instantiate()
 	pickups.add_child(health)
 	health.global_position = pos
+
+func _on_check_timer_timeout() -> void:
+	print(enemies.get_child_count())
+	if (enemies.get_child_count() == 0) and spawn_complete:
+		get_tree().create_timer(3).timeout.connect(func(): _change_wave())

@@ -185,6 +185,10 @@ stream = ExtResource("16_lakw3")
 volume_db = -15.0
 bus = &"Misc"
 
+[node name="CheckTimer" type="Timer" parent="Spawner"]
+wait_time = 3.0
+one_shot = true
+
 [node name="Spawn" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 1, 0.2)
 scale = Vector2(4, 4)
@@ -211,3 +215,4 @@ navigation_polygon = SubResource("NavigationPolygon_o8fc1")
 metadata/_edit_lock_ = true
 
 [connection signal="pressed" from="UI/RetryButton" to="UI" method="_on_retry_button_pressed"]
+[connection signal="timeout" from="Spawner/CheckTimer" to="Spawner" method="_on_check_timer_timeout"]
