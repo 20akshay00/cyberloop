@@ -9,7 +9,7 @@ var _is_active = true
 func _on_body_entered(body: Node2D) -> void:
 	if body is Player:
 		body.add_health(health)
-		AudioManager.play_effect(AudioManager.pick_up_sfx)
+		AudioManager.play_effect(AudioManager.pick_up_sfx, -6)
 		if tween: tween.kill()
 		tween = get_tree().create_tween()
 		tween.tween_property(self, "modulate:a", 0., 0.1)

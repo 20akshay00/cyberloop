@@ -97,6 +97,9 @@ wait_time = 0.1
 
 [node name="ExplosionSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("6_7d6rn")
+volume_db = 3.0
+attenuation = 1.36604
+panning_strength = 2.0
 bus = &"Misc"
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]

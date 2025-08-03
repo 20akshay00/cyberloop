@@ -36,6 +36,9 @@ shape = SubResource("CircleShape2D_b6sar")
 
 [node name="ShootSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("4_lu340")
+volume_db = 4.0
+attenuation = 0.812252
+panning_strength = 2.0
 bus = &"Misc"
 
 [connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]

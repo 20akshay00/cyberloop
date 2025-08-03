@@ -191,18 +191,22 @@ shape = SubResource("CapsuleShape2D_dwbse")
 
 [node name="DriveSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("4_dqkch")
+volume_db = -8.0
 bus = &"PlayerBike"
 
 [node name="DrawSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("6_smehm")
+volume_db = -3.0
 bus = &"PlayerBike"
 
 [node name="HitSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("7_y4r1p")
+volume_db = 3.0
 bus = &"Communication"
 
 [node name="PowerDepletedSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("8_d2wvv")
+volume_db = -3.0
 bus = &"Communication"
 
 [node name="DrawStartSound" type="AudioStreamPlayer" parent="."]
@@ -211,6 +215,7 @@ bus = &"PlayerBike"
 
 [node name="PowerFullSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("9_3v2ag")
+volume_db = -3.0
 bus = &"Communication"
 
 [node name="FallSound" type="AudioStreamPlayer2D" parent="."]
