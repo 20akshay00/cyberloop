@@ -170,7 +170,23 @@ texture = ExtResource("7_e3hyu")
 
 [node name="Droids" type="Node2D" parent="."]
 
+[node name="Droid" parent="." instance=ExtResource("5_71j4m")]
+position = Vector2(1914, 1378)
+
+[node name="Enemy" parent="." instance=ExtResource("4_i7141")]
+position = Vector2(-2965, 945)
+
+[node name="Enemy2" parent="." instance=ExtResource("4_i7141")]
+position = Vector2(388, -1166)
+
+[node name="Enemy3" parent="." instance=ExtResource("4_i7141")]
+position = Vector2(-467, -2117)
+
+[node name="Enemy4" parent="." instance=ExtResource("4_i7141")]
+position = Vector2(-1450, 1772)
+
 [node name="Player" parent="." node_paths=PackedStringArray("trails", "spawn_point") groups=["player"] instance=ExtResource("3_qfnet")]
+position = Vector2(0, 7)
 trails = NodePath("../Trails")
 spawn_point = NodePath("../Spawn")
 
@@ -184,6 +200,7 @@ wait_time = 30.0
 autostart = true
 
 [node name="Spawner" type="Node2D" parent="." node_paths=PackedStringArray("enemies", "droids", "mines", "pickups", "player")]
+position = Vector2(842, 1294)
 script = ExtResource("14_o8fc1")
 enemy_scene = ExtResource("4_i7141")
 enemies = NodePath("../Enemies")
@@ -194,6 +211,12 @@ mines = NodePath("../Mines")
 pickup_scene = ExtResource("12_q5onr")
 pickups = NodePath("../Pickups")
 player = NodePath("../Player")
+
+[node name="HealthPickup" parent="." instance=ExtResource("12_q5onr")]
+position = Vector2(-246, 546)
+
+[node name="HealthPickup2" parent="." instance=ExtResource("12_q5onr")]
+position = Vector2(583, -155)
 
 [connection signal="pressed" from="UI/RetryButton" to="UI" method="_on_retry_button_pressed"]
 [connection signal="timeout" from="RunTimer" to="." method="_on_run_timer_timeout"]
