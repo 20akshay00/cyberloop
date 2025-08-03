@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://c2yidqjagbkrb"]
+[gd_scene load_steps=19 format=3 uid="uid://c2yidqjagbkrb"]
 
 [ext_resource type="Script" uid="uid://d1e3vu4scial2" path="res://scenes/world.gd" id="1_qfnet"]
 [ext_resource type="Texture2D" uid="uid://c3284varj7i2o" path="res://assets/art/background_v2.png" id="2_4mrxx"]
@@ -16,11 +16,12 @@
 [ext_resource type="FontFile" uid="uid://cmmi1q3juj7cv" path="res://assets/fonts/PixelOperator-Bold.ttf" id="8_lakw3"]
 [ext_resource type="Texture2D" uid="uid://b7agburjl2awr" path="res://assets/art/cyberlooop_title_v1.png" id="9_dss4m"]
 [ext_resource type="PackedScene" uid="uid://bj2wc68ug3gbv" path="res://scenes/health_pickup.tscn" id="12_q5onr"]
+[ext_resource type="Script" uid="uid://c5yqgbyb6k0gc" path="res://scripts/spawner.gd" id="14_o8fc1"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_o8fc1"]
-vertices = PackedVector2Array(6326.88, 6065.89, -5918.07, 5940.1, -6011.92, -6097.01, 6184.11, -6115.98)
+vertices = PackedVector2Array(3918.15, -3428.04, 4042.83, 4214.1, -4156.86, 4299.89, -4051.13, -3466.95)
 polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
-outlines = Array[PackedVector2Array]([PackedVector2Array(-6022, -6107, -5928, 5950, 6337, 6076, 6194, -6126)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-4061, -3477, -4167, 4310, 4053, 4224, 3928, -3438)])
 
 [node name="World" type="Node2D"]
 script = ExtResource("1_qfnet")
@@ -154,52 +155,24 @@ centered = false
 region_enabled = true
 region_rect = Rect2(0, 0, 1920, 1080)
 
-[node name="Trails" type="Node2D" parent="."]
-
 [node name="Spawn" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 1, 0.2)
 scale = Vector2(4, 4)
 texture = ExtResource("7_e3hyu")
 
-[node name="HealthPickup" parent="." instance=ExtResource("12_q5onr")]
-position = Vector2(-225, 241)
+[node name="Trails" type="Node2D" parent="."]
 
-[node name="HealthPickup2" parent="." instance=ExtResource("12_q5onr")]
-position = Vector2(-97, -211)
+[node name="Mines" type="Node2D" parent="."]
 
-[node name="ProximityMine" parent="." instance=ExtResource("8_7r4gi")]
-position = Vector2(471, 206)
+[node name="Pickups" type="Node2D" parent="."]
 
-[node name="ProximityMine2" parent="." instance=ExtResource("8_7r4gi")]
-position = Vector2(-650, 936)
+[node name="Enemies" type="Node2D" parent="."]
 
-[node name="ProximityMine3" parent="." instance=ExtResource("8_7r4gi")]
-position = Vector2(508, 1372)
-
-[node name="ProximityMine4" parent="." instance=ExtResource("8_7r4gi")]
-position = Vector2(508, 1372)
+[node name="Droids" type="Node2D" parent="."]
 
 [node name="Player" parent="." node_paths=PackedStringArray("trails", "spawn_point") groups=["player"] instance=ExtResource("3_qfnet")]
 trails = NodePath("../Trails")
 spawn_point = NodePath("../Spawn")
-
-[node name="Enemy" parent="." instance=ExtResource("4_i7141")]
-position = Vector2(1306, 971)
-
-[node name="Enemy2" parent="." instance=ExtResource("4_i7141")]
-position = Vector2(943, -93)
-
-[node name="Enemy3" parent="." instance=ExtResource("4_i7141")]
-position = Vector2(-289, 720)
-
-[node name="Enemy4" parent="." instance=ExtResource("4_i7141")]
-position = Vector2(654, 684)
-
-[node name="Droid" parent="." instance=ExtResource("5_71j4m")]
-position = Vector2(2387, 582)
-
-[node name="Droid2" parent="." instance=ExtResource("5_71j4m")]
-position = Vector2(3827, 2548)
 
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
 position = Vector2(-57, -507)
@@ -209,6 +182,18 @@ metadata/_edit_lock_ = true
 [node name="RunTimer" type="Timer" parent="."]
 wait_time = 30.0
 autostart = true
+
+[node name="Spawner" type="Node2D" parent="." node_paths=PackedStringArray("enemies", "droids", "mines", "pickups", "player")]
+script = ExtResource("14_o8fc1")
+enemy_scene = ExtResource("4_i7141")
+enemies = NodePath("../Enemies")
+droid_scene = ExtResource("5_71j4m")
+droids = NodePath("../Droids")
+mine_scene = ExtResource("8_7r4gi")
+mines = NodePath("../Mines")
+pickup_scene = ExtResource("12_q5onr")
+pickups = NodePath("../Pickups")
+player = NodePath("../Player")
 
 [connection signal="pressed" from="UI/RetryButton" to="UI" method="_on_retry_button_pressed"]
 [connection signal="timeout" from="RunTimer" to="." method="_on_run_timer_timeout"]

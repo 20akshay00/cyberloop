@@ -16,10 +16,17 @@ var prev_pos := Vector2.ZERO
 
 @onready var drive_sound := $DriveSound
 
+var spawn_tween: Tween = null
+
 func _ready() -> void:
 	target = get_tree().get_nodes_in_group("player")[0]
 	add_to_group("enemies")
 	drive_sound.play()
+	
+	modulate.a = 0.
+	scale = Vector2(0., 0.)
+	_is_active = false
+	spawn()
 
 func fall() -> void:
 	die()
@@ -84,3 +91,12 @@ func _on_hit_area_body_entered(body: Node2D) -> void:
 		death_anim.animation_finished.connect(func(): death_anim.queue_free())
 		death_anim.show()
 		death_anim.play()
+		
+func spawn() -> void:
+	if spawn_tween: spawn_tween.kill()
+	spawn_tween = get_tree().create_tween()
+	spawn_tween.set_parallel()
+	spawn_tween.tween_property(self, "scale", Vector2(1., 1.), 1.)
+	spawn_tween.tween_property(self, "modulate:a", 1., 1.)
+	spawn_tween.set_parallel(false)
+	spawn_tween.tween_callback(func(): _is_active = true)

@@ -9,6 +9,12 @@ var _is_exploding := false
 var death_tween: Tween = null 
 var _is_active = true
 
+func _ready() -> void:
+	modulate.a = 0.
+	scale = Vector2(0., 0.)
+	_is_active = false
+	spawn()
+
 func explode() -> void:
 	_is_exploding = true
 	$ExplosionSound.play()
@@ -61,3 +67,11 @@ func fall() -> void:
 		death_tween.tween_property(self, "modulate:a", 0., 1)
 		death_tween.set_parallel(false)
 		death_tween.tween_callback(queue_free)
+
+func spawn() -> void:
+	var spawn_tween = get_tree().create_tween()
+	spawn_tween.set_parallel()
+	spawn_tween.tween_property(self, "scale", Vector2(1., 1.), 1.)
+	spawn_tween.tween_property(self, "modulate:a", 1., 1.)
+	spawn_tween.set_parallel(false)
+	spawn_tween.tween_callback(func(): _is_active = true)

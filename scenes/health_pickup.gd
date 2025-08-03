@@ -17,11 +17,10 @@ func _on_body_entered(body: Node2D) -> void:
 
 func _ready() -> void:
 	scale = Vector2(randf_range(1., 1.2), randf_range(1., 1.2))
-	if tween: tween.kill()
-	tween = get_tree().create_tween()
-	tween.set_loops()
-	tween.tween_property(self, "scale", Vector2(1.3, 1.3), 0.5)
-	tween.tween_property(self, "scale", Vector2(1., 1.), 0.5)
+	modulate.a = 0.
+	scale = Vector2(0., 0.)
+	_is_active = false
+	spawn()
 
 func fall() -> void:
 	if _is_active:
@@ -35,3 +34,19 @@ func fall() -> void:
 		death_tween.tween_property(self, "modulate:a", 0., 1)
 		death_tween.set_parallel(false)
 		death_tween.tween_callback(queue_free)
+
+func spawn() -> void:
+	var spawn_tween = get_tree().create_tween()
+	spawn_tween.set_parallel()
+	spawn_tween.tween_property(self, "scale", Vector2(1., 1.), 1.)
+	spawn_tween.tween_property(self, "modulate:a", 1., 1.)
+	spawn_tween.set_parallel(false)
+	spawn_tween.tween_callback(func(): init())
+
+func init() -> void:
+	_is_active = true
+	if tween: tween.kill()
+	tween = get_tree().create_tween()
+	tween.set_loops()
+	tween.tween_property(self, "scale", Vector2(1.3, 1.3), 0.5)
+	tween.tween_property(self, "scale", Vector2(1., 1.), 0.5)

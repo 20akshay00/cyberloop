@@ -222,10 +222,10 @@ stream = ExtResource("13_a8ls1")
 bus = &"Communication"
 
 [node name="Camera2D" type="Camera2D" parent="."]
-limit_left = -6000
-limit_top = -6000
-limit_right = 6000
-limit_bottom = 6000
+limit_left = -4000
+limit_top = -4000
+limit_right = 4000
+limit_bottom = 4000
 position_smoothing_speed = 15.0
 script = ExtResource("7_smehm")
 
