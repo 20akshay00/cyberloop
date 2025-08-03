@@ -34,7 +34,7 @@ func _on_player_health_changed() -> void:
 	tween.tween_property(health_bar, "value", player.health, 2. * abs(health_bar.value - player.health)/player.MAX_HEALTH)
 	tween.tween_callback(
 	func():
-		if player.health == 0: player.death()
+		if player.health <= 0: player.death()
 	)
 
 func start() -> void:

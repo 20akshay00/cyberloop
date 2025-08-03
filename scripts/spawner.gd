@@ -25,7 +25,7 @@ var wave: int = 0
 
 var enemy_count = 0
 var enemy_count_ref = [
-	1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 
+	1, 1, 1, 2, 2, 2, 3, 3, 3, 3,
 	3, 4, 4, 4, 4, 4, 4, 4, 5, 5,
 	5, 5, 5, 5, 5, 5, 6, 6, 6, 6
 	]
@@ -111,10 +111,13 @@ func _change_wave() -> void:
 		var pos = _start_droid_spawn()
 		_start_mine_spawn(pos)
 
-func _check_enemies() -> void:
+func check_enemies() -> void:
 	enemy_count -= 1
-	if enemy_count == 0 and spawn_complete:
+	if enemy_count <= 0 and spawn_complete:
 		get_tree().create_timer(3).timeout.connect(func(): _change_wave())
+
+func _check_enemies() -> void:
+	call_deferred("check_enemies")
 
 func _start_enemy_spawn() -> void:
 	for i in enemy_count:

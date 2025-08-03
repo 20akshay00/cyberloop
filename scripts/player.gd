@@ -19,7 +19,7 @@ var POWER_COST: float = 0.0005/5
 var MAX_HEALTH: float = 5.
 var health: float = MAX_HEALTH
 
-var RECHARGE_VEL: float = 2100.
+var RECHARGE_VEL: float = 2200.
 var RECHARGE_AMOUNT: float = 0.275
 
 var prev_pos: Vector2 = Vector2.ZERO
@@ -148,7 +148,7 @@ func die() -> void:
 	death_tween.set_parallel(false)
 	death_tween.tween_callback(
 		func(): 
-			damage(1)
+			damage(2)
 			respawn()
 			)
 			

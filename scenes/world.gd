@@ -10,6 +10,8 @@ func _ready() -> void:
 	EventManager.hole_created.connect(_on_hole_created)
 	EventManager.game_over.connect(_on_game_over)
 	EventManager.enemy_died.connect(_on_enemy_died)
+	EventManager.enemy_self_died.connect(_on_enemy_self_died)
+
 	EventManager.player_hit.connect(_on_player_hit)
 
 	EventManager.wave_changed.connect(_on_wave_changed)
@@ -70,7 +72,7 @@ func reset_data() -> void:
 	_save_data()
 
 func _on_enemy_self_died() -> void:
-	score -= 5
+	score -= 10
 	$UI.set_score(score)
 	
 func _on_wave_changed(wave: int) -> void:
