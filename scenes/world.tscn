@@ -46,7 +46,7 @@ offset_bottom = 944.0
 scale = Vector2(3, 3)
 max_value = 5.0
 step = 0.005
-value = 4.845
+value = 5.0
 texture_progress = ExtResource("3_7r4gi")
 
 [node name="PowerBar" type="TextureProgressBar" parent="UI"]
