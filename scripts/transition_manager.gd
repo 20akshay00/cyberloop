@@ -15,6 +15,7 @@ func change_scene(target : PackedScene) -> void:
 
 func reload_scene() -> void:
 	get_tree().paused = false
+	AudioManager.play_effect(AudioManager.transition_sfx)
 	$ColorRect.material.set_shader_parameter("reverse", false)
 	var tween = get_tree().create_tween()
 	tween.tween_property($ColorRect.material, "shader_parameter/progress", 1., 0.5)

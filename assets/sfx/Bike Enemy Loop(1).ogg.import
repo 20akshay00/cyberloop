@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://pnv2pttvm2b"
+path="res://.godot/imported/Bike Enemy Loop(1).ogg-805203ccfb6f1c72eb203bc793def03b.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/sfx/Bike Enemy Loop(1).ogg"
+dest_files=["res://.godot/imported/Bike Enemy Loop(1).ogg-805203ccfb6f1c72eb203bc793def03b.oggvorbisstr"]
+
+[params]
+
+loop=true
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

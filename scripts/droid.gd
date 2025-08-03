@@ -32,7 +32,7 @@ func _on_shoot_timer_timeout() -> void:
 		projectile.rotation = rotation
 		projectile.velocity = 900 * Vector2(cos(rotation), sin(rotation))
 		add_sibling(projectile)
-		AudioManager.play_effect(AudioManager.enemy_shoot_sfx)
+		$ShootSound.play()
 
 
 func fall() -> void:

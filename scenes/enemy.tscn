@@ -1,10 +1,11 @@
-[gd_scene load_steps=16 format=3 uid="uid://clep1ecol48uk"]
+[gd_scene load_steps=17 format=3 uid="uid://clep1ecol48uk"]
 
 [ext_resource type="Script" uid="uid://cpcv4y15t1lwt" path="res://scripts/enemy.gd" id="1_4gyqm"]
 [ext_resource type="Texture2D" uid="uid://cqro5ie6mvm0b" path="res://assets/art/tron_bike_v1.png" id="2_4gyqm"]
 [ext_resource type="Texture2D" uid="uid://t2kq8dkd2xt5" path="res://assets/art/tron_bike_glow_lines_v1.png" id="3_4ra3w"]
 [ext_resource type="AudioStream" uid="uid://b4ax4tm3dvanm" path="res://assets/sfx/Explosion.mp3" id="5_c4w8v"]
 [ext_resource type="Texture2D" uid="uid://bf667fh16sk6k" path="res://assets/art/explosion_anim_v2.png" id="5_xwavj"]
+[ext_resource type="AudioStream" uid="uid://pnv2pttvm2b" path="res://assets/sfx/Bike Enemy Loop(1).ogg" id="6_xwavj"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_4gyqm"]
 radius = 24.5
@@ -118,6 +119,10 @@ animation = &"explode"
 
 [node name="DeathSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("5_c4w8v")
+bus = &"Misc"
+
+[node name="DriveSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("6_xwavj")
 bus = &"Misc"
 
 [connection signal="velocity_computed" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_velocity_computed"]

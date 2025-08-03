@@ -72,9 +72,11 @@ func _process(delta: float) -> void:
 		move_and_slide()
 
 		if Input.is_action_just_pressed("draw") and not _is_drawing:
-			if power > 0.:
+			if power > 0.05:
 				_is_drawing = true
 				draw_sound.play()
+			else:
+				if not power_empty_sound.is_playing(): power_empty_sound.play()
 				#draw_start_sound.play()
 
 		if Input.is_action_just_released("draw") and _is_drawing:

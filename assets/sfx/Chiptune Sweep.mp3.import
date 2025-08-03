@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://brwhvjqsvwj"
+path="res://.godot/imported/Chiptune Sweep.mp3-da3a06b3e7c04a8c44fd5ce2d9dbd20f.mp3str"
+
+[deps]
+
+source_file="res://assets/sfx/Chiptune Sweep.mp3"
+dest_files=["res://.godot/imported/Chiptune Sweep.mp3-da3a06b3e7c04a8c44fd5ce2d9dbd20f.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

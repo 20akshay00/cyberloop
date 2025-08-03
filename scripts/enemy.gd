@@ -12,16 +12,21 @@ var _state: bool = true
 
 var chase_speed: float = 800
 var run_speed: float = 500
+var prev_pos := Vector2.ZERO
+
+@onready var drive_sound := $DriveSound
 
 func _ready() -> void:
 	target = get_tree().get_nodes_in_group("player")[0]
 	add_to_group("enemies")
+	drive_sound.play()
 
 func fall() -> void:
 	die()
 
 func die() -> void:
 	if _is_active:
+		drive_sound.stop()
 		EventManager.enemy_died.emit()
 		_is_active = false
 		process_mode = Node.PROCESS_MODE_DISABLED
@@ -60,7 +65,8 @@ func _physics_process(delta: float) -> void:
 func _on_navigation_agent_2d_velocity_computed(safe_velocity: Vector2) -> void:
 	velocity = safe_velocity
 	sprite.rotation = atan2(velocity.y, velocity.x) + PI/2
-	
+	drive_sound.pitch_scale = clampf((global_position - prev_pos).length()/20. + 1., 1., 2.)
+	prev_pos = global_position
 	move_and_slide()
 	
 func hit(val) -> void:

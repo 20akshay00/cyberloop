@@ -3,8 +3,8 @@ extends AudioStreamPlayer
 var loop_created_sfx := load("res://assets/sfx/Loop Created Longer 2.mp3")
 var fall_sfx := load("res://assets/sfx/Spiral long.mp3")
 var loop_invalid_sfx := load("res://assets/sfx/Cannot Form Loop.mp3")
-var enemy_shoot_sfx := load("res://assets/sfx/Enemy shooting.mp3")
 var pick_up_sfx := load("res://assets/sfx/Object Pick up.mp3")
+var transition_sfx := load("res://assets/sfx/Chiptune Sweep.mp3")
 
 func _play_music(music: AudioStream, volume = -7):
 	if stream == music:
