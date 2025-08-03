@@ -2,7 +2,7 @@ extends Line2D
 class_name Crack
 
 var _is_orphan: bool = false
-var _max_points: int = 100
+var _max_points: int = 80
 var intersect_idx: int = -1
 
 @export var damage_area_scene: PackedScene

@@ -75,8 +75,12 @@ func _on_enemy_self_died() -> void:
 	
 func _on_wave_changed(wave: int) -> void:
 	score += 5 * wave
+	if wave > 30: score += 500
 	$UI.set_score(score)
-	
-	for child in $Trails.get_children():
-		if child is DamageArea:
-			child.despawn()
+
+	if wave <= 30:	
+		for child in $Trails.get_children():
+			if child is DamageArea:
+				child.despawn()
+	else:
+		TransitionManager.reload_scene()

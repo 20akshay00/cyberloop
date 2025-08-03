@@ -182,7 +182,7 @@ player = NodePath("../Player")
 
 [node name="EnemySpawnSound" type="AudioStreamPlayer" parent="Spawner"]
 stream = ExtResource("16_lakw3")
-volume_db = -16.0
+volume_db = -15.0
 bus = &"Misc"
 
 [node name="Spawn" type="Sprite2D" parent="."]

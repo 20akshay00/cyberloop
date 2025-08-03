@@ -24,13 +24,31 @@ var _is_active: bool = false
 var wave: int = 0
 
 var enemy_count = 0
-var enemy_count_ref = [1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 5]
+var enemy_count_ref = [
+	1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 
+	3, 4, 4, 4, 4, 4, 4, 4, 5, 5,
+	5, 5, 5, 5, 5, 5, 6, 6, 6, 6
+	]
+
 var spawn_complete := false
 
-var droid_count_ref = [0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 2, 0, 2, 0, 2, 0, 2, 0, 1, 0, 1]
-var mine_count_ref = [0, 0, 0, 1, 0, 2, 0, 1, 0, 1, 0, 3, 0, 1, 0, 0, 1, 3, 0, 0, 1]
+var droid_count_ref = [
+	0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 
+	2, 0, 2, 0, 2, 0, 2, 0, 2, 0,
+	2, 0, 3, 0, 3, 0, 3, 0, 3, 0
+	]
+	
+var mine_count_ref = [
+	0, 0, 0, 1, 0, 2, 0, 2, 0, 2, 
+	0, 2, 2, 2, 2, 2, 0, 3, 0, 3,
+	3, 0, 3, 0, 3, 0, 3, 4, 5, 5
+	]
 
-var num_lives_ref = [0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+var num_lives_ref = [
+	0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 
+	3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 
+	3, 3, 3, 3, 3, 2, 2, 2, 2, 2
+	]
 
 func _ready() -> void:
 	EventManager.enemy_died.connect(_check_enemies)
@@ -81,13 +99,17 @@ func _spawn_pos_random(exclude: Array[Vector2] = [], cutoff=100., maxiter=10) ->
 func _change_wave() -> void:
 	spawn_complete = false
 	wave += 1
-	EventManager.wave_changed.emit(wave)
-	enemy_count = enemy_count_ref[wave-1]
 	
-	_start_lives_spawn()
-	_start_enemy_spawn()
-	var pos = _start_droid_spawn()
-	_start_mine_spawn(pos)
+	EventManager.wave_changed.emit(wave)
+	
+	if wave <= 30:
+		if wave > 1 : $EnemySpawnSound.play()
+		enemy_count = enemy_count_ref[wave-1]
+		
+		_start_lives_spawn()
+		_start_enemy_spawn()
+		var pos = _start_droid_spawn()
+		_start_mine_spawn(pos)
 
 func _check_enemies() -> void:
 	enemy_count -= 1
@@ -97,7 +119,6 @@ func _check_enemies() -> void:
 func _start_enemy_spawn() -> void:
 	for i in enemy_count:
 		_spawn_enemy()
-		if wave > 1 : $EnemySpawnSound.play()
 		await get_tree().create_timer(3.).timeout
 		
 	spawn_complete = true
