@@ -10,7 +10,7 @@ var target: Player = null
 var run: bool = false
 var _state: bool = true
 
-var chase_speed: float = 800
+var chase_speed: float = 500
 var run_speed: float = 500
 var prev_pos := Vector2.ZERO
 

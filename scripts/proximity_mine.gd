@@ -32,8 +32,9 @@ func explode() -> void:
 
 func _on_body_entered(body: Node2D) -> void:
 	if (body is Player) and not _is_exploding:
-		explode()
-		body.hit(1)
+		if not is_equal_approx(body.velocity.length(), body.max_speed):
+			explode()
+			body.hit(1)
 		#if explosion_timer.is_stopped():
 			#explosion_timer.start()
 			#if tween: tween.kill()

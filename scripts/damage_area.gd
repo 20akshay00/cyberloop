@@ -5,7 +5,7 @@ var _is_active: bool = false
 var fade_tween: Tween = null
 
 func _ready() -> void:
-	AudioManager.play_effect(AudioManager.loop_created_sfx)
+	AudioManager.play_effect(AudioManager.loop_created_sfx, -3)
 	get_tree().create_timer(0.3).timeout.connect(
 		func(): 
 			_is_active = true
@@ -54,3 +54,14 @@ func generate_uvs(polygon: PackedVector2Array) -> PackedVector2Array:
 	var anchor = Vector2(xmin, ymin)
 
 	return PackedVector2Array(points.map(func(p): return (p - anchor)/5))
+
+func despawn() -> void:
+	$CollisionPolygon2D.disabled = true
+	if fade_tween: fade_tween.kill()
+	fade_tween = get_tree().create_tween()
+	fade_tween.set_parallel()
+	fade_tween.tween_property($Polygon2D.material, "shader_parameter/dissolve_value", 1., 1.)
+	fade_tween.tween_property(self, "modulate:a", 0., 1.)
+	fade_tween.set_parallel(false)
+	
+	fade_tween.tween_callback(func(): queue_free())

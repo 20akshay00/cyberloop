@@ -8,3 +8,5 @@ signal game_over
 
 signal enemy_died
 signal player_hit
+
+signal wave_changed(wave: int)

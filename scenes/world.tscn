@@ -31,7 +31,7 @@ layer = 2
 script = ExtResource("2_e3hyu")
 player = NodePath("../Player")
 
-[node name="TextureRect" type="TextureRect" parent="UI"]
+[node name="BarHolder" type="TextureRect" parent="UI"]
 offset_left = 37.0
 offset_top = 899.0
 offset_right = 222.0
@@ -144,6 +144,17 @@ pivot_offset = Vector2(245, 34)
 texture = ExtResource("9_dss4m")
 stretch_mode = 5
 
+[node name="WaveLabel" type="Label" parent="UI"]
+offset_left = 100.0
+offset_top = 70.0
+offset_right = 211.0
+offset_bottom = 115.0
+pivot_offset = Vector2(55, 20)
+theme_override_colors/font_color = Color(0.403922, 0.776471, 0.776471, 1)
+theme_override_fonts/font = ExtResource("8_lakw3")
+theme_override_font_sizes/font_size = 38
+text = "Wave 0"
+
 [node name="Parallax2D" type="Parallax2D" parent="."]
 repeat_size = Vector2(960, 960)
 repeat_times = 3
@@ -169,21 +180,6 @@ texture = ExtResource("7_e3hyu")
 [node name="Enemies" type="Node2D" parent="."]
 
 [node name="Droids" type="Node2D" parent="."]
-
-[node name="Droid" parent="." instance=ExtResource("5_71j4m")]
-position = Vector2(1914, 1378)
-
-[node name="Enemy" parent="." instance=ExtResource("4_i7141")]
-position = Vector2(-2965, 945)
-
-[node name="Enemy2" parent="." instance=ExtResource("4_i7141")]
-position = Vector2(388, -1166)
-
-[node name="Enemy3" parent="." instance=ExtResource("4_i7141")]
-position = Vector2(-467, -2117)
-
-[node name="Enemy4" parent="." instance=ExtResource("4_i7141")]
-position = Vector2(-1450, 1772)
 
 [node name="Player" parent="." node_paths=PackedStringArray("trails", "spawn_point") groups=["player"] instance=ExtResource("3_qfnet")]
 position = Vector2(0, 7)
@@ -212,11 +208,8 @@ pickup_scene = ExtResource("12_q5onr")
 pickups = NodePath("../Pickups")
 player = NodePath("../Player")
 
-[node name="HealthPickup" parent="." instance=ExtResource("12_q5onr")]
-position = Vector2(-246, 546)
-
-[node name="HealthPickup2" parent="." instance=ExtResource("12_q5onr")]
-position = Vector2(583, -155)
+[node name="ProximityMine" parent="." instance=ExtResource("8_7r4gi")]
+position = Vector2(-701, 516)
 
 [connection signal="pressed" from="UI/RetryButton" to="UI" method="_on_retry_button_pressed"]
 [connection signal="timeout" from="RunTimer" to="." method="_on_run_timer_timeout"]

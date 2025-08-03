@@ -12,6 +12,7 @@ func _ready() -> void:
 	EventManager.enemy_died.connect(_on_enemy_died)
 	EventManager.player_hit.connect(_on_player_hit)
 
+	EventManager.wave_changed.connect(_on_wave_changed)
 	set_activity(false)
 	
 func _on_hole_created() -> void:
@@ -71,3 +72,8 @@ func reset_data() -> void:
 func _on_run_timer_timeout() -> void:
 	score += 10
 	$UI.set_score(score)
+	
+func _on_wave_changed(wave: int) -> void:
+	for child in $Trails.get_children():
+		if child is DamageArea:
+			child.despawn()

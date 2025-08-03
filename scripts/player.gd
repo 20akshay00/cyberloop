@@ -14,13 +14,13 @@ var respawn_tween: Tween = null
 
 var MAX_POWER: float = 1.
 var power: float = 1.
-var POWER_COST: float = 0.0005/5
+var POWER_COST: float = 0.00065/5
 
-var MAX_HEALTH: float = 3.
-var health: float = 5.
+var MAX_HEALTH: float = 5.
+var health: float = MAX_HEALTH
 
-var RECHARGE_DIST: float = 25.
-var RECHARGE_AMOUNT: float = 0.0045
+var RECHARGE_DIST: float = 36.
+var RECHARGE_AMOUNT: float = 0.003
 
 var prev_pos: Vector2 = Vector2.ZERO
 
@@ -35,7 +35,7 @@ var prev_pos: Vector2 = Vector2.ZERO
 var pitch: float = 0.
 
 @export var spawn_point: Sprite2D # absolutely horrid architecture!
-
+"min_speed"
 var closest_enemy_pos: Vector2 = Vector2.ZERO
 var closest_enemy_dist: float = 1e10
 
@@ -46,7 +46,7 @@ var itween: Tween = null
 @export var min_speed: float = 700.0
 @export var max_speed: float = 2500.0
 @export var rotation_speed: float = 10.0  # radians per second
-@export var sensitivity: float = 2.5  # How strongly distance affects speed
+@export var sensitivity: float = 4.3  # How strongly distance affects speed
 
 var mouse_dir := Vector2.ZERO
 var mouse_distance := 0.
@@ -56,6 +56,7 @@ func _ready() -> void:
 	
 	drive_sound.play()
 	EventManager.shake_screen.connect(_shake_screen)
+	EventManager.wave_changed.connect(_on_wave_changed)
 
 func _process(delta: float) -> void:
 	if _is_active:
@@ -67,7 +68,7 @@ func _process(delta: float) -> void:
 		var target_rot = mouse_dir.angle() + PI/2
 		rotation = lerp_angle(rotation, target_rot, rotation_speed * delta)
 
-		var speed = min_speed + min(mouse_distance * sensitivity, max_speed)
+		var speed = min_speed + min(mouse_distance * sensitivity, max_speed - min_speed)
 		velocity = Vector2(cos(rotation-PI/2), sin(rotation-PI/2)) * speed
 		move_and_slide()
 
@@ -210,3 +211,6 @@ func death() -> void:
 	drive_sound.stop()
 	$CollisionShape2D.set_deferred("disabled", true)
 	$DeathAnimation.animation_finished.connect(func(): EventManager.game_over.emit())
+
+func _on_wave_changed(wave: int) -> void:
+	add_health(MAX_HEALTH - health)

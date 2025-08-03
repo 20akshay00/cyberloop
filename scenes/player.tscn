@@ -252,4 +252,5 @@ metadata/_edit_use_anchors_ = true
 [node name="Sprite2D" type="Sprite2D" parent="Pointer"]
 position = Vector2(69.49, 0)
 rotation = 0.785398
+scale = Vector2(1.5, 1.5)
 texture = ExtResource("9_ur7pv")

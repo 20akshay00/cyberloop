@@ -7,8 +7,10 @@ extends CanvasLayer
 var tween: Tween = null
 var start_tween: Tween = null
 var title_tween: Tween = null
+var wave_tween: Tween = null
 
 func _ready() -> void:
+	EventManager.wave_changed.connect(set_wave)
 	EventManager.player_health_changed.connect(_on_player_health_changed)
 	
 	if start_tween: start_tween.kill()
@@ -52,3 +54,10 @@ func set_high_score(score: int):
 
 func set_score(score: int):
 	$VBoxContainer/CurrentScore.text = "Score: " + str(score)
+
+func set_wave(wave: int):
+	$WaveLabel.text = "Wave " + str(wave)
+	if wave_tween: wave_tween.kill()
+	wave_tween = get_tree().create_tween()
+	wave_tween.tween_property($WaveLabel, "scale", Vector2(1.3, 1.3), 0.25)
+	wave_tween.tween_property($WaveLabel, "scale", Vector2(1., 1.), 0.25)
