@@ -38,8 +38,8 @@ func fall() -> void:
 func spawn() -> void:
 	var spawn_tween = get_tree().create_tween()
 	spawn_tween.set_parallel()
-	spawn_tween.tween_property(self, "scale", Vector2(1., 1.), 1.)
-	spawn_tween.tween_property(self, "modulate:a", 1., 1.)
+	spawn_tween.tween_property(self, "scale", Vector2(1., 1.), 1.5)
+	spawn_tween.tween_property(self, "modulate:a", 1., 1.5)
 	spawn_tween.set_parallel(false)
 	spawn_tween.tween_callback(func(): init())
 

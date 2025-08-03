@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://c2yidqjagbkrb"]
+[gd_scene load_steps=20 format=3 uid="uid://c2yidqjagbkrb"]
 
 [ext_resource type="Script" uid="uid://d1e3vu4scial2" path="res://scenes/world.gd" id="1_qfnet"]
 [ext_resource type="Texture2D" uid="uid://c3284varj7i2o" path="res://assets/art/background_v2.png" id="2_4mrxx"]
@@ -17,6 +17,7 @@
 [ext_resource type="Texture2D" uid="uid://b7agburjl2awr" path="res://assets/art/cyberlooop_title_v1.png" id="9_dss4m"]
 [ext_resource type="PackedScene" uid="uid://bj2wc68ug3gbv" path="res://scenes/health_pickup.tscn" id="12_q5onr"]
 [ext_resource type="Script" uid="uid://c5yqgbyb6k0gc" path="res://scripts/spawner.gd" id="14_o8fc1"]
+[ext_resource type="AudioStream" uid="uid://uj6hdor8rjog" path="res://assets/sfx/Ping single tone.mp3" id="16_lakw3"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_o8fc1"]
 vertices = PackedVector2Array(3918.15, -3428.04, 4042.83, 4214.1, -4156.86, 4299.89, -4051.13, -3466.95)
@@ -166,6 +167,24 @@ centered = false
 region_enabled = true
 region_rect = Rect2(0, 0, 1920, 1080)
 
+[node name="Spawner" type="Node2D" parent="." node_paths=PackedStringArray("enemies", "droids", "mines", "pickups", "player")]
+position = Vector2(842, 1294)
+script = ExtResource("14_o8fc1")
+enemy_scene = ExtResource("4_i7141")
+enemies = NodePath("../Enemies")
+droid_scene = ExtResource("5_71j4m")
+droids = NodePath("../Droids")
+mine_scene = ExtResource("8_7r4gi")
+mines = NodePath("../Mines")
+pickup_scene = ExtResource("12_q5onr")
+pickups = NodePath("../Pickups")
+player = NodePath("../Player")
+
+[node name="EnemySpawnSound" type="AudioStreamPlayer" parent="Spawner"]
+stream = ExtResource("16_lakw3")
+volume_db = -16.0
+bus = &"Misc"
+
 [node name="Spawn" type="Sprite2D" parent="."]
 modulate = Color(1, 1, 1, 0.2)
 scale = Vector2(4, 4)
@@ -191,25 +210,4 @@ position = Vector2(-57, -507)
 navigation_polygon = SubResource("NavigationPolygon_o8fc1")
 metadata/_edit_lock_ = true
 
-[node name="RunTimer" type="Timer" parent="."]
-wait_time = 30.0
-autostart = true
-
-[node name="Spawner" type="Node2D" parent="." node_paths=PackedStringArray("enemies", "droids", "mines", "pickups", "player")]
-position = Vector2(842, 1294)
-script = ExtResource("14_o8fc1")
-enemy_scene = ExtResource("4_i7141")
-enemies = NodePath("../Enemies")
-droid_scene = ExtResource("5_71j4m")
-droids = NodePath("../Droids")
-mine_scene = ExtResource("8_7r4gi")
-mines = NodePath("../Mines")
-pickup_scene = ExtResource("12_q5onr")
-pickups = NodePath("../Pickups")
-player = NodePath("../Player")
-
-[node name="ProximityMine" parent="." instance=ExtResource("8_7r4gi")]
-position = Vector2(-701, 516)
-
 [connection signal="pressed" from="UI/RetryButton" to="UI" method="_on_retry_button_pressed"]
-[connection signal="timeout" from="RunTimer" to="." method="_on_run_timer_timeout"]

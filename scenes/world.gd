@@ -68,12 +68,15 @@ func _on_player_hit() -> void:
 func reset_data() -> void:
 	high_score = 0
 	_save_data()
-	
-func _on_run_timer_timeout() -> void:
-	score += 10
+
+func _on_enemy_self_died() -> void:
+	score -= 5
 	$UI.set_score(score)
 	
 func _on_wave_changed(wave: int) -> void:
+	score += 5 * wave
+	$UI.set_score(score)
+	
 	for child in $Trails.get_children():
 		if child is DamageArea:
 			child.despawn()

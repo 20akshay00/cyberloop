@@ -14,7 +14,7 @@ extends Node2D
 
 @export var player: Player
 
-var side = 3800
+var side = 3600
 var xmin = -side
 var xmax = +side
 var ymin = -side
@@ -23,18 +23,20 @@ var ymax = side
 var _is_active: bool = false
 var wave: int = 0
 
+var enemy_count = 0
+var enemy_count_ref = [1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 5]
+var spawn_complete := false
+
+var droid_count_ref = [0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 2, 0, 2, 0, 2, 0, 2, 0, 1, 0, 1]
+var mine_count_ref = [0, 0, 0, 1, 0, 2, 0, 1, 0, 1, 0, 3, 0, 1, 0, 0, 1, 3, 0, 0, 1]
+
+var num_lives_ref = [0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+
 func _ready() -> void:
+	EventManager.enemy_died.connect(_check_enemies)
+	EventManager.enemy_self_died.connect(_check_enemies)
+	
 	_change_wave()
-
-func _spawn_enemy() -> void:
-
-	var enemy = enemy_scene.instantiate()
-	enemies.add_child(enemy)
-	enemy.global_position = _spawn_pos_player()
-
-func _process(delta: float) -> void:
-	if Input.is_action_just_pressed("undraw"):
-		_change_wave()
 
 func _spawn_pos_player(radius: float = 5) -> Vector2:
 	var base_angle = player.velocity.angle()
@@ -61,6 +63,85 @@ func _spawn_pos_boundary() -> Vector2:
 	
 	return Vector2(x, y)
 
+func _spawn_pos_random(exclude: Array[Vector2] = [], cutoff=100., maxiter=10) -> Vector2:
+	exclude.push_back(player.global_position)
+	for i in maxiter:
+		var pos = Vector2(randf_range(xmin * 0.9, xmax * 0.9), randf_range(ymin * 0.9, ymax * 0.9))
+		var flag = true
+		for point in exclude:
+			if (pos - point).length() < cutoff:
+				flag = false
+				break
+		
+		if flag: 
+			return pos
+
+	return Vector2(xmax, ymax)
+
 func _change_wave() -> void:
+	spawn_complete = false
 	wave += 1
 	EventManager.wave_changed.emit(wave)
+	enemy_count = enemy_count_ref[wave-1]
+	
+	_start_lives_spawn()
+	_start_enemy_spawn()
+	var pos = _start_droid_spawn()
+	_start_mine_spawn(pos)
+
+func _check_enemies() -> void:
+	enemy_count -= 1
+	if enemy_count == 0 and spawn_complete:
+		get_tree().create_timer(3).timeout.connect(func(): _change_wave())
+
+func _start_enemy_spawn() -> void:
+	for i in enemy_count:
+		_spawn_enemy()
+		if wave > 1 : $EnemySpawnSound.play()
+		await get_tree().create_timer(3.).timeout
+		
+	spawn_complete = true
+
+func _start_droid_spawn(pos: Array[Vector2] = []) -> Array[Vector2]:
+	for i in droid_count_ref[wave-1]:
+		pos.push_back(_spawn_droid(pos))
+		
+	return pos 
+
+func _start_mine_spawn(pos: Array[Vector2] = []) -> Array[Vector2]:
+	for i in mine_count_ref[wave-1]:
+		pos.push_back(_spawn_mine(pos))
+		
+	return pos
+
+func _start_lives_spawn() -> void:
+	var radius = randf_range(500, 1000)
+	
+	var num_lives = pickups.get_child_count()
+	var n = min(max(0, 5 - num_lives), num_lives_ref[wave-1])
+		
+	var offset = randf() * TAU
+	for i in n:
+		_spawn_pickup(Vector2(radius * cos(2 * i * PI/n + offset), radius * sin(2 * i * PI/n + offset)))
+	
+func _spawn_enemy() -> void:
+	var enemy = enemy_scene.instantiate()
+	enemies.add_child(enemy)
+	enemy.global_position = _spawn_pos_boundary()
+	
+func _spawn_droid(exclude: Array[Vector2]=[]) -> Vector2:
+	var droid = droid_scene.instantiate()
+	droids.add_child(droid)
+	droid.global_position = _spawn_pos_random(exclude)
+	return droid.global_position
+
+func _spawn_mine(exclude: Array[Vector2] = []) -> Vector2:
+	var mine = mine_scene.instantiate()
+	mines.add_child(mine)
+	mine.global_position = _spawn_pos_random(exclude)
+	return mine.global_position
+	
+func _spawn_pickup(pos: Vector2) -> void:
+	var health = pickup_scene.instantiate()
+	pickups.add_child(health)
+	health.global_position = pos

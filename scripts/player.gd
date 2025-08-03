@@ -14,13 +14,13 @@ var respawn_tween: Tween = null
 
 var MAX_POWER: float = 1.
 var power: float = 1.
-var POWER_COST: float = 0.00065/5
+var POWER_COST: float = 0.0005/5
 
 var MAX_HEALTH: float = 5.
 var health: float = MAX_HEALTH
 
-var RECHARGE_DIST: float = 36.
-var RECHARGE_AMOUNT: float = 0.003
+var RECHARGE_VEL: float = 2300.
+var RECHARGE_AMOUNT: float = 0.2
 
 var prev_pos: Vector2 = Vector2.ZERO
 
@@ -96,8 +96,8 @@ func _process(delta: float) -> void:
 					_create_trail()
 					draw_sound.stop()
 		else:
-			if (global_position - prev_pos).length() > RECHARGE_DIST and power < 1.:
-				power += RECHARGE_AMOUNT
+			if velocity.length() > RECHARGE_VEL and power < 1.:
+				power += RECHARGE_AMOUNT * delta
 				if power > 1: 
 					power = 1.
 					power_full_sound.play()
@@ -110,17 +110,16 @@ func _process(delta: float) -> void:
 		
 		if get_tree().get_nodes_in_group("enemies").size() > 0:
 			$Pointer.show()
+			for enemy in get_tree().get_nodes_in_group("enemies"):
+				var dist = (enemy.global_position - global_position).length()
+				if dist < closest_enemy_dist:
+					closest_enemy_dist = dist
+					closest_enemy_pos = enemy.global_position - global_position
+				
+			$Pointer.rotation = lerp_angle($Pointer.rotation, atan2(closest_enemy_pos.y, closest_enemy_pos.x) - rotation, 0.1)
+			closest_enemy_dist= 1e10
 		else:
 			$Pointer.hide()
-		
-		for enemy in get_tree().get_nodes_in_group("enemies"):
-			var dist = (enemy.global_position - global_position).length()
-			if dist < closest_enemy_dist:
-				closest_enemy_dist = dist
-				closest_enemy_pos = enemy.global_position - global_position
-			
-		$Pointer.rotation = lerp_angle($Pointer.rotation, atan2(closest_enemy_pos.y, closest_enemy_pos.x) - rotation, 0.1)
-		closest_enemy_dist= 1e10
 	
 func _create_trail() -> void:
 	if trail: trail.destroy()
@@ -183,7 +182,7 @@ func damage(val) -> void:
 	EventManager.player_health_changed.emit()
 	EventManager.player_hit.emit()
 	
-func _activate_invincibility(duration: float = 3) -> void:
+func _activate_invincibility(duration: float = 4) -> void:
 	_is_invincible = true
 	if itween: itween.kill()
 	itween = get_tree().create_tween()
@@ -197,7 +196,7 @@ func _shake_screen() -> void:
 	$Camera2D.screen_shake(8, 0.5)
 
 func add_health(val: float) -> void:
-	health += val
+	health = min(MAX_HEALTH, health + val)
 	EventManager.player_health_changed.emit()
 
 func death() -> void:
@@ -213,4 +212,5 @@ func death() -> void:
 	$DeathAnimation.animation_finished.connect(func(): EventManager.game_over.emit())
 
 func _on_wave_changed(wave: int) -> void:
-	add_health(MAX_HEALTH - health)
+	return
+	#add_health(MAX_HEALTH - health)

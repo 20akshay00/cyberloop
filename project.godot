@@ -10,10 +10,10 @@ config_version=5
 
 [application]
 
-config/name="GMTK2025"
+config/name="Cyberloop"
 run/main_scene="uid://c2yidqjagbkrb"
 config/features=PackedStringArray("4.4", "Mobile")
-config/icon="res://icon.svg"
+config/icon="uid://cqro5ie6mvm0b"
 
 [autoload]
 

@@ -6,7 +6,7 @@ var fade_tween: Tween = null
 
 func _ready() -> void:
 	AudioManager.play_effect(AudioManager.loop_created_sfx, -3)
-	get_tree().create_timer(0.3).timeout.connect(
+	get_tree().create_timer(0.2).timeout.connect(
 		func(): 
 			_is_active = true
 			for body in get_overlapping_bodies():

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://uj6hdor8rjog"
+path="res://.godot/imported/Ping single tone.mp3-916e2ad45a192b1fda5d8d4df0e349a5.mp3str"
+
+[deps]
+
+source_file="res://assets/sfx/Ping single tone.mp3"
+dest_files=["res://.godot/imported/Ping single tone.mp3-916e2ad45a192b1fda5d8d4df0e349a5.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

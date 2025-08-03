@@ -10,8 +10,8 @@ var target: Player = null
 var run: bool = false
 var _state: bool = true
 
-var chase_speed: float = 500
-var run_speed: float = 500
+var chase_speed: float = 850
+var run_speed: float = 600
 var prev_pos := Vector2.ZERO
 
 @onready var drive_sound := $DriveSound
@@ -49,13 +49,13 @@ func die() -> void:
 		death_tween.tween_callback(queue_free)
 
 func _physics_process(delta: float) -> void:
-	if _is_active:
+	if _is_active and target._is_active:
 		$NavigationAgent2D.target_position = target.global_position
 		var nav_point_dir := to_local($NavigationAgent2D.get_next_path_position())
 		
 		if (target.trail.get_point_count() > 10 and target.velocity.length() > 1100.):
 			if _state:
-				run = true if randf() > 0.4 else false
+				run = true if randf() > 0.7 else false
 				_state = false
 			
 			if run: 
@@ -64,7 +64,7 @@ func _physics_process(delta: float) -> void:
 				$NavigationAgent2D.set_velocity(nav_point_dir.normalized() * chase_speed)
 		else:
 			_state = true
-			$NavigationAgent2D.set_velocity(nav_point_dir.normalized() * 1100.)
+			$NavigationAgent2D.set_velocity(nav_point_dir.normalized() * chase_speed)
 	else:
 		velocity = Vector2.ZERO
 		move_and_slide()
@@ -91,6 +91,8 @@ func _on_hit_area_body_entered(body: Node2D) -> void:
 		death_anim.animation_finished.connect(func(): death_anim.queue_free())
 		death_anim.show()
 		death_anim.play()
+		EventManager.enemy_self_died.emit()
+		queue_free()
 		
 func spawn() -> void:
 	if spawn_tween: spawn_tween.kill()
