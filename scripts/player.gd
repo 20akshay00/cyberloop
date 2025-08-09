@@ -48,8 +48,15 @@ var itween: Tween = null
 @export var rotation_speed: float = 10.0  # radians per second
 @export var sensitivity: float = 4.3  # How strongly distance affects speed
 
+@onready var alert_rect: ColorRect = $Camera2D/CanvasLayer/AlertRect
+@onready var camera: Camera2D = $Camera2D
+
 var mouse_dir := Vector2.ZERO
 var mouse_distance := 0.
+
+var target_pos := Vector2.ZERO
+
+var _platform_mobile := false
 
 func _ready() -> void:
 	_create_trail()
@@ -58,9 +65,20 @@ func _ready() -> void:
 	EventManager.shake_screen.connect(_shake_screen)
 	EventManager.wave_changed.connect(_on_wave_changed)
 
+	_platform_mobile = true if (OS.get_name() == "Android" or OS.has_feature("web_android") or OS.has_feature("web_ios")) else false
+	if _platform_mobile:
+		EventManager.draw_enabled.connect(_on_draw)
+		EventManager.draw_disabled.connect(_on_draw_release)
+	
 func _process(delta: float) -> void:
 	if _is_active:
-		var target_pos = get_global_mouse_position()
+		if _platform_mobile:
+			target_pos = Input.get_vector("left", "right", "up", "down") * 600. + global_position
+			target_pos.x = clamp(target_pos.x, -3800, 3800)
+			target_pos.y = clamp(target_pos.y, -3800, 3800)
+		else:
+			target_pos = get_global_mouse_position()
+		
 		if (target_pos - global_position).length() > 10.0:
 			mouse_dir = target_pos - global_position
 			mouse_distance = mouse_dir.length()
@@ -68,22 +86,15 @@ func _process(delta: float) -> void:
 		var target_rot = mouse_dir.angle() + PI/2
 		rotation = lerp_angle(rotation, target_rot, rotation_speed * delta)
 
-		var speed = min_speed + min(mouse_distance * sensitivity, max_speed - min_speed)
+		var speed = min_speed + min(mouse_distance * sensitivity * $Camera2D.zoom.x, max_speed - min_speed)
 		velocity = Vector2(cos(rotation-PI/2), sin(rotation-PI/2)) * speed
 		move_and_slide()
 
-		if Input.is_action_just_pressed("draw") and not _is_drawing:
-			if power > 0.05:
-				_is_drawing = true
-				draw_sound.play()
-			else:
-				if not power_empty_sound.is_playing(): power_empty_sound.play()
-				#draw_start_sound.play()
+		if not _platform_mobile and Input.is_action_just_pressed("draw") and not _is_drawing:
+			_on_draw()
 
-		if Input.is_action_just_released("draw") and _is_drawing:
-			_is_drawing = false
-			_create_trail()
-			draw_sound.stop()
+		if not _platform_mobile and Input.is_action_just_released("draw") and _is_drawing:
+			_on_draw_release()
 
 		if _is_drawing:
 			trail.add_point(global_position)
@@ -213,4 +224,18 @@ func death() -> void:
 
 func _on_wave_changed(wave: int) -> void:
 	return
-	#add_health(MAX_HEALTH - health)
+
+func _update_alert() -> void:
+	pass
+
+func _on_draw():
+	if power > 0.05:
+		_is_drawing = true
+		draw_sound.play()
+	else:
+		if not power_empty_sound.is_playing(): power_empty_sound.play()
+		
+func _on_draw_release():
+	_is_drawing = false
+	_create_trail()
+	draw_sound.stop()

@@ -143,20 +143,20 @@ shader = ExtResource("3_tuyoq")
 shader_parameter/overlay_strength = 0.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_dwbse"]
-radius = 16.0
-height = 66.0
+radius = 24.0
+height = 96.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fulsm"]
 shader = ExtResource("15_qfm1y")
 shader_parameter/edge_top = false
 shader_parameter/edge_bottom = false
-shader_parameter/edge_left = true
+shader_parameter/edge_left = false
 shader_parameter/edge_right = false
-shader_parameter/corner_tl = true
-shader_parameter/corner_tr = true
+shader_parameter/corner_tl = false
+shader_parameter/corner_tr = false
 shader_parameter/corner_bl = false
 shader_parameter/corner_br = false
-shader_parameter/flash_strength = 0.525
+shader_parameter/flash_strength = 1.0
 shader_parameter/flash_color = Color(0.708189, 2.64719e-06, 5.77569e-07, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_y4r1p"]
@@ -241,7 +241,6 @@ stream = ExtResource("13_a8ls1")
 bus = &"Communication"
 
 [node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(0.8, 0.8)
 limit_left = -4000
 limit_top = -4000
 limit_right = 4000

@@ -45,9 +45,9 @@ var mine_count_ref = [
 	]
 
 var num_lives_ref = [
-	0, 3, 3, 3, 3, 3, 3, 3, 3, 3, 
-	3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 
-	3, 3, 3, 3, 3, 2, 2, 2, 2, 2
+	0, 3, 3, 3, 3, 2, 2, 2, 2, 2, 
+	2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 
+	1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 	]
 
 func _ready() -> void:
@@ -167,6 +167,6 @@ func _spawn_pickup(pos: Vector2) -> void:
 	health.global_position = pos
 
 func _on_check_timer_timeout() -> void:
-	print(enemies.get_child_count())
 	if (enemies.get_child_count() == 0) and spawn_complete:
-		get_tree().create_timer(3).timeout.connect(func(): _change_wave())
+		_change_wave()
+		#get_tree().create_timer(2).timeout.connect(func(): _change_wave())

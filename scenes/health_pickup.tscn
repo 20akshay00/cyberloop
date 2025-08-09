@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://du5mxgijbi2ce" path="res://assets/art/health_icon_v1.png" id="2_3p6mu"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ciapp"]
-radius = 18.0278
+radius = 26.0192
 
 [node name="HealthPickup" type="Area2D"]
 collision_layer = 2

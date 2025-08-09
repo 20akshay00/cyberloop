@@ -3,11 +3,13 @@ extends CanvasLayer
 @export var player: Player
 @onready var power_bar := $PowerBar
 @onready var health_bar := $HealthBar
+@onready var score_label := $VBoxContainer/CurrentScore
 
 var tween: Tween = null
 var start_tween: Tween = null
 var title_tween: Tween = null
 var wave_tween: Tween = null
+var score_tween: Tween = null
 
 func _ready() -> void:
 	EventManager.wave_changed.connect(set_wave)
@@ -53,7 +55,11 @@ func set_high_score(score: int):
 	$VBoxContainer/HighScore.text = "High score: " + str(score)
 
 func set_score(score: int):
-	$VBoxContainer/CurrentScore.text = "Score: " + str(score)
+	score_label.text = "Score: " + str(score)
+	#if score_tween: score_tween.kill()
+	#score_tween = get_tree().create_tween()
+	#score_tween.tween_property(score_label, "scale", Vector2(1.2, 1.2), 0.5)
+	#score_tween.tween_property(score_label, "scale", Vector2(1., 1.), 0.5)
 
 func set_wave(wave: int):
 	$WaveLabel.text = "Wave " + str(wave)

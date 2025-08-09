@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://c2yidqjagbkrb"]
+[gd_scene load_steps=22 format=3 uid="uid://c2yidqjagbkrb"]
 
 [ext_resource type="Script" uid="uid://d1e3vu4scial2" path="res://scenes/world.gd" id="1_qfnet"]
 [ext_resource type="Texture2D" uid="uid://c3284varj7i2o" path="res://assets/art/background_v2.png" id="2_4mrxx"]
@@ -15,9 +15,13 @@
 [ext_resource type="PackedScene" uid="uid://0287u7bkbm56" path="res://scenes/proximity_mine.tscn" id="8_7r4gi"]
 [ext_resource type="FontFile" uid="uid://cmmi1q3juj7cv" path="res://assets/fonts/PixelOperator-Bold.ttf" id="8_lakw3"]
 [ext_resource type="Texture2D" uid="uid://b7agburjl2awr" path="res://assets/art/cyberlooop_title_v1.png" id="9_dss4m"]
+[ext_resource type="PackedScene" uid="uid://dmr0fcamx7t56" path="res://addons/virtual_joystick/virtual_joystick_scene.tscn" id="10_pm21f"]
 [ext_resource type="PackedScene" uid="uid://bj2wc68ug3gbv" path="res://scenes/health_pickup.tscn" id="12_q5onr"]
 [ext_resource type="Script" uid="uid://c5yqgbyb6k0gc" path="res://scripts/spawner.gd" id="14_o8fc1"]
 [ext_resource type="AudioStream" uid="uid://uj6hdor8rjog" path="res://assets/sfx/Ping single tone.mp3" id="16_lakw3"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pm21f"]
+size = Vector2(960, 1080)
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_o8fc1"]
 vertices = PackedVector2Array(3918.15, -3428.04, 4042.83, 4214.1, -4156.86, 4299.89, -4051.13, -3466.95)
@@ -61,6 +65,24 @@ max_value = 1.0
 step = 0.001
 value = 1.0
 texture_progress = ExtResource("4_w7kh3")
+
+[node name="VirtualJoyStick" parent="UI" instance=ExtResource("10_pm21f")]
+modulate = Color(0.576, 0.925, 0.871, 0.01)
+anchors_preset = 3
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -859.0
+offset_top = -816.0
+offset_right = -559.0
+offset_bottom = -516.0
+grow_horizontal = 0
+scale = Vector2(3, 3)
+mouse_filter = 1
+visibility_mode = 1
+action_left = "left"
+action_right = "right"
+action_up = "up"
+action_down = "down"
 
 [node name="RetryButton" type="TextureButton" parent="UI"]
 custom_minimum_size = Vector2(50, 50)
@@ -156,9 +178,16 @@ theme_override_fonts/font = ExtResource("8_lakw3")
 theme_override_font_sizes/font_size = 38
 text = "Wave 0"
 
+[node name="TouchScreenButton" type="TouchScreenButton" parent="UI"]
+position = Vector2(480, 540)
+shape = SubResource("RectangleShape2D_pm21f")
+
 [node name="Parallax2D" type="Parallax2D" parent="."]
+scroll_offset = Vector2(272, 171)
 repeat_size = Vector2(960, 960)
 repeat_times = 3
+metadata/_edit_group_ = true
+metadata/_edit_lock_ = true
 
 [node name="Sprite2D" type="Sprite2D" parent="Parallax2D"]
 texture_repeat = 2
@@ -193,6 +222,7 @@ one_shot = true
 modulate = Color(1, 1, 1, 0.2)
 scale = Vector2(4, 4)
 texture = ExtResource("7_e3hyu")
+metadata/_edit_lock_ = true
 
 [node name="Trails" type="Node2D" parent="."]
 
@@ -208,6 +238,7 @@ texture = ExtResource("7_e3hyu")
 position = Vector2(0, 7)
 trails = NodePath("../Trails")
 spawn_point = NodePath("../Spawn")
+metadata/_edit_lock_ = true
 
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
 position = Vector2(-57, -507)
@@ -215,4 +246,6 @@ navigation_polygon = SubResource("NavigationPolygon_o8fc1")
 metadata/_edit_lock_ = true
 
 [connection signal="pressed" from="UI/RetryButton" to="UI" method="_on_retry_button_pressed"]
+[connection signal="pressed" from="UI/TouchScreenButton" to="." method="_on_touch_screen_button_pressed"]
+[connection signal="released" from="UI/TouchScreenButton" to="." method="_on_touch_screen_button_released"]
 [connection signal="timeout" from="Spawner/CheckTimer" to="Spawner" method="_on_check_timer_timeout"]

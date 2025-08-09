@@ -12,3 +12,6 @@ signal enemy_self_died
 signal player_hit
 
 signal wave_changed(wave: int)
+
+signal draw_enabled
+signal draw_disabled

@@ -1,19 +1,21 @@
 extends Node2D
 
 var _is_active := false
-var high_score: int = 0
+var high_score: Array = [0, 0]
 var score: int = 0
 
+var multiplier: int = 1
+var mode: int = 0 # 0 is easy, 1 is hardcore
+
 func _ready() -> void:
+	Engine.max_fps = 60
 	_load_scores()
-	$UI.set_high_score(high_score)
+	$UI.set_high_score(high_score[mode])
 	EventManager.hole_created.connect(_on_hole_created)
 	EventManager.game_over.connect(_on_game_over)
 	EventManager.enemy_died.connect(_on_enemy_died)
 	EventManager.enemy_self_died.connect(_on_enemy_self_died)
-
 	EventManager.player_hit.connect(_on_player_hit)
-
 	EventManager.wave_changed.connect(_on_wave_changed)
 	set_activity(false)
 	
@@ -22,8 +24,8 @@ func _on_hole_created() -> void:
 
 func _on_game_over() -> void:
 	get_tree().paused = true
-	if score > high_score: 
-		high_score = score
+	if score > high_score[mode]: 
+		high_score[mode] = score
 		_save_data()
 		
 	TransitionManager.reload_scene()
@@ -32,7 +34,14 @@ func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("reload"):
 		TransitionManager.reload_scene()
 	if not _is_active and Input.is_action_just_pressed("draw"):
+		mode = 0
 		set_activity(true)
+		$UI.set_high_score(high_score[mode])
+		$UI.start()
+	if not _is_active and Input.is_action_just_pressed("undraw"):
+		mode = 1
+		set_activity(true)
+		$UI.set_high_score(high_score[mode])
 		$UI.start()
 
 func set_activity(val: bool):
@@ -42,17 +51,17 @@ func set_activity(val: bool):
 			child._is_active = val
 			
 func _load_scores() -> void:
-	if FileAccess.file_exists("user://save_data_v1.json"):
-		FileAccess.open("user://save_data_v1.json", FileAccess.READ)
+	if FileAccess.file_exists("user://save_data_v2.json"):
+		FileAccess.open("user://save_data_v2.json", FileAccess.READ)
 		var json := JSON.new()
-		var error := json.parse(FileAccess.get_file_as_string("user://save_data_v1.json"))
+		var error := json.parse(FileAccess.get_file_as_string("user://save_data_v2.json"))
 		if error == OK:
 			var data = json.data
 			high_score = data["high_score"]
 
 func _save_data() -> void:
 	var save_data := {"high_score": high_score}
-	var save_file := FileAccess.open("user://save_data_v1.json", FileAccess.WRITE)
+	var save_file := FileAccess.open("user://save_data_v2.json", FileAccess.WRITE)
 	save_file.store_line(JSON.stringify(save_data))
 
 func _notification(what):
@@ -68,7 +77,8 @@ func _on_player_hit() -> void:
 	$UI.set_score(score)
 
 func reset_data() -> void:
-	high_score = 0
+	high_score[0] = 0
+	high_score[1] = 0
 	_save_data()
 
 func _on_enemy_self_died() -> void:
@@ -80,9 +90,17 @@ func _on_wave_changed(wave: int) -> void:
 	if wave > 30: score += 500
 	$UI.set_score(score)
 
-	if wave <= 30:	
-		for child in $Trails.get_children():
-			if child is DamageArea:
-				child.despawn()
+	if wave <= 30:
+		if (mode == 0):
+			for child in $Trails.get_children():
+				if child is DamageArea:
+					child.despawn()
 	else:
-		TransitionManager.reload_scene()
+		_on_game_over()
+
+
+func _on_touch_screen_button_pressed() -> void:
+	EventManager.draw_enabled.emit()
+
+func _on_touch_screen_button_released() -> void:
+	EventManager.draw_disabled.emit()
