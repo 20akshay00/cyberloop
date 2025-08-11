@@ -15,6 +15,7 @@ var run_speed: float = 600
 var prev_pos := Vector2.ZERO
 
 @onready var drive_sound := $DriveSound
+@onready var fall_sound := $FallSound
 
 var spawn_tween: Tween = null
 
@@ -29,6 +30,7 @@ func _ready() -> void:
 	spawn()
 
 func fall() -> void:
+	fall_sound.play() #why no play??
 	die()
 
 func die() -> void:

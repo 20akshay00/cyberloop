@@ -28,6 +28,7 @@ var prev_pos: Vector2 = Vector2.ZERO
 @onready var draw_sound := $DrawSound
 @onready var power_full_sound := $PowerFullSound
 @onready var power_empty_sound := $PowerDepletedSound
+@onready var power_charging_sound := $PowerChargingSound
 @onready var hit_sound := $HitSound
 @onready var draw_start_sound := $DrawStartSound
 @onready var fall_sound := $FallSound
@@ -109,10 +110,19 @@ func _process(delta: float) -> void:
 		else:
 			if velocity.length() > RECHARGE_VEL and power < 1.:
 				power += RECHARGE_AMOUNT * delta
+				if power_charging_sound.has_stream_playback() == false:
+					draw_start_sound.play()
+					power_charging_sound.play()
 				if power > 1: 
 					power = 1.
+					power_charging_sound.stop()
 					power_full_sound.play()
-
+		
+		
+		if velocity.length() < RECHARGE_VEL:
+			power_charging_sound.stop()
+		
+	
 		pitch = clampf((global_position - prev_pos).length()/20. + 1., 1., 2.)
 		drive_sound.pitch_scale = pitch
 		drive_sound.pitch_scale = pitch
@@ -148,6 +158,7 @@ func die() -> void:
 	
 	draw_sound.stop()
 	drive_sound.stop()
+	power_charging_sound.stop()
 	$CollisionShape2D.set_deferred("disabled", true)
 	if death_tween: death_tween.kill() 
 	
@@ -229,6 +240,7 @@ func _update_alert() -> void:
 	pass
 
 func _on_draw():
+	power_charging_sound.stop()
 	if power > 0.05:
 		_is_drawing = true
 		draw_sound.play()
