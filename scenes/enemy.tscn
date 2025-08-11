@@ -6,7 +6,7 @@
 [ext_resource type="AudioStream" uid="uid://b4ax4tm3dvanm" path="res://assets/sfx/Explosion.mp3" id="5_c4w8v"]
 [ext_resource type="Texture2D" uid="uid://bf667fh16sk6k" path="res://assets/art/explosion_anim_v2.png" id="5_xwavj"]
 [ext_resource type="AudioStream" uid="uid://b0yqirokuapv6" path="res://assets/sfx/Bike Enemy Loop 2.ogg" id="6_xwavj"]
-[ext_resource type="AudioStream" uid="uid://b428pqlgglfl" path="res://assets/sfx/Spiral long.mp3" id="7_nenq2"]
+[ext_resource type="AudioStream" uid="uid://b0y3ccte151yl" path="res://assets/sfx/Spiral short.mp3" id="7_nenq2"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_4gyqm"]
 radius = 24.5
@@ -123,7 +123,6 @@ stream = ExtResource("5_c4w8v")
 volume_db = 3.0
 attenuation = 1.41421
 panning_strength = 2.0
-bus = &"Misc"
 
 [node name="DriveSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("6_xwavj")
@@ -134,7 +133,7 @@ bus = &"Misc"
 [node name="FallSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("7_nenq2")
 panning_strength = 2.0
-bus = &"Misc"
+bus = &"Communication"
 
 [connection signal="velocity_computed" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_velocity_computed"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
