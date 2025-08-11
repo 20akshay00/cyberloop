@@ -1,7 +1,7 @@
 extends AudioStreamPlayer
 
 var loop_created_sfx := load("res://assets/sfx/Loop Created Longer 2.mp3")
-var fall_sfx := load("res://assets/sfx/Spiral long.mp3")
+var fall_sfx := load("res://assets/sfx/Spiral short.mp3")
 var loop_invalid_sfx := load("res://assets/sfx/Cannot Form Loop.mp3")
 var pick_up_sfx := load("res://assets/sfx/Object Pick up.mp3")
 var transition_sfx := load("res://assets/sfx/Chiptune Sweep.mp3")
@@ -17,15 +17,26 @@ func _play_music(music: AudioStream, volume = -7):
 func play_music_level():
 	pass
 
-func play_effect(aud_stream: AudioStream, volume = 0.0, loops = false):
+func play_effect(aud_stream: AudioStream, volume = 0.0, bus="Misc"):
 	var fx_player = AudioStreamPlayer.new()
 	fx_player.stream = aud_stream
 	fx_player.name = "FX_PLAYER"
 	fx_player.volume_db = volume
-	fx_player.bus = "Misc"
+	fx_player.bus = bus
 	add_child(fx_player)
 	fx_player.play()
-	if not loops: 
-		fx_player.finished.connect(fx_player.queue_free)
+	fx_player.finished.connect(fx_player.queue_free)
+
+	return fx_player
+	
+func play_spatial_effect(aud_stream: AudioStream, position=Vector2.ZERO, volume = 0.0, bus="Misc"):
+	var fx_player = AudioStreamPlayer2D.new()
+	fx_player.global_position = position
+	fx_player.stream = aud_stream
+	fx_player.name = "FX_PLAYER"
+	fx_player.volume_db = volume
+	add_child(fx_player)
+	fx_player.play()
+	fx_player.finished.connect(fx_player.queue_free)
 
 	return fx_player

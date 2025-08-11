@@ -16,6 +16,7 @@ var prev_pos := Vector2.ZERO
 
 @onready var drive_sound := $DriveSound
 @onready var fall_sound := $FallSound
+@onready var death_sound := $DeathSound
 
 var spawn_tween: Tween = null
 
@@ -35,7 +36,7 @@ func fall() -> void:
 func die() -> void:
 	if _is_active:
 		drive_sound.stop()
-		fall_sound.play() #why no play??
+		AudioManager.play_spatial_effect(AudioManager.fall_sfx, global_position, 0., "Misc")
 		EventManager.enemy_died.emit()
 		_is_active = false
 		process_mode = Node.PROCESS_MODE_DISABLED
@@ -85,11 +86,11 @@ func _on_hit_area_body_entered(body: Node2D) -> void:
 	if body is Player and _is_active:
 		body.hit(1)
 		_is_active = false
-		$DeathSound.play()
-
+		death_sound.play()
 		$Sprite.hide()
 		
 		var death_anim = $DeathAnimation
+		death_sound.reparent(death_anim)
 		death_anim.reparent(get_parent())
 		death_anim.animation_finished.connect(func(): death_anim.queue_free())
 		death_anim.show()
