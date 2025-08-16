@@ -9,6 +9,9 @@ var _is_exploding := false
 var death_tween: Tween = null 
 var _is_active = true
 
+@export_subgroup("Visuals")
+@export var fall_animation_config: FallAnimationConfig
+
 func _ready() -> void:
 	modulate.a = 0.
 	scale = Vector2(0., 0.)
@@ -57,19 +60,6 @@ func _on_body_entered(body: Node2D) -> void:
 		#if body is Player:
 			#print("hi")
 			#body.hit(1)
-
-func fall() -> void:
-	if _is_active:
-		_is_active = false
-		if death_tween: death_tween.kill() 
-		
-		death_tween = get_tree().create_tween()
-		death_tween.set_parallel()
-		death_tween.tween_property(self, "rotation", rotation + 3*PI, 1)
-		death_tween.tween_property(self, "scale", Vector2(0., 0.), 1)
-		death_tween.tween_property(self, "modulate:a", 0., 1)
-		death_tween.set_parallel(false)
-		death_tween.tween_callback(queue_free)
 
 func spawn() -> void:
 	var spawn_tween = get_tree().create_tween()

@@ -1,5 +1,5 @@
 extends Line2D
-class_name Crack
+class_name Trail
 
 var _is_orphan: bool = false
 var _max_points: int = 90
@@ -12,9 +12,9 @@ var shape_points: PackedVector2Array = []
 const spawn_side: float = 50.
 var spawn_area := PackedVector2Array(
 	[
-		Vector2(-spawn_side, -spawn_side), 
-		Vector2(-spawn_side, spawn_side), 
-		Vector2(spawn_side, spawn_side), 
+		Vector2(-spawn_side, -spawn_side),
+		Vector2(-spawn_side, spawn_side),
+		Vector2(spawn_side, spawn_side),
 		Vector2(spawn_side, -spawn_side)
 		]
 )
@@ -32,17 +32,17 @@ func _process(delta: float) -> void:
 			remove_point(0)
 		else:
 			queue_free()
-		return 
+		return
 
 	if get_point_count() > _max_points: remove_point(0)
 	
-	for idx in range(points.size()-3):
-		if Geometry2D.segment_intersects_segment(points[idx], points[idx+1], points[-2], points[-1]):
+	for idx in range(points.size() - 3):
+		if Geometry2D.segment_intersects_segment(points[idx], points[idx + 1], points[-2], points[-1]):
 			intersect_idx = idx
 			break
 
 	if intersect_idx >= 0:
-		shape_points = points.slice(intersect_idx, points.size()-1)
+		shape_points = points.slice(intersect_idx, points.size() - 1)
 		
 		if calculate_area(shape_points) > 5000:
 			if (Geometry2D.intersect_polygons(shape_points, spawn_area).size() == 0) and (Geometry2D.decompose_polygon_in_convex(shape_points).size() > 0):
@@ -50,10 +50,10 @@ func _process(delta: float) -> void:
 					damage_area.set_points(shape_points)
 					add_sibling(damage_area)
 				
-					var crack = self.duplicate()
-					crack.points = points.slice(0, intersect_idx)
-					add_sibling(crack)
-					crack.destroy()
+					var Trail = self.duplicate()
+					Trail.points = points.slice(0, intersect_idx)
+					add_sibling(Trail)
+					Trail.destroy()
 					clear_points()
 			else:
 				_throw_error()

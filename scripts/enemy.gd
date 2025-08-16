@@ -20,6 +20,9 @@ var prev_pos := Vector2.ZERO
 
 var spawn_tween: Tween = null
 
+@export_subgroup("Visuals")
+@export var fall_animation_config: FallAnimationConfig
+
 func _ready() -> void:
 	target = get_tree().get_nodes_in_group("player")[0]
 	add_to_group("enemies")
@@ -56,7 +59,7 @@ func _physics_process(delta: float) -> void:
 		$NavigationAgent2D.target_position = target.global_position
 		var nav_point_dir := to_local($NavigationAgent2D.get_next_path_position())
 		
-		if (target.trail.get_point_count() > 10 and target.velocity.length() > 1100.):
+		if target.is_vulnerable():
 			if _state:
 				run = true if randf() > 0.7 else false
 				_state = false

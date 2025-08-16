@@ -20,7 +20,7 @@ config/icon="uid://nwaqpaghwotw"
 EventManager="*res://scripts/event_manager.gd"
 AudioManager="*res://scenes/audio_manager.tscn"
 TransitionManager="*res://scenes/transition_manager.tscn"
-Initializer="*res://scripts/initializer.gd"
+Config="*res://scripts/Config.gd"
 
 [display]
 

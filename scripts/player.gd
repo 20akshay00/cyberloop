@@ -1,29 +1,40 @@
 extends CharacterBody2D
 class_name Player
 
-@export var crack_scene: PackedScene
+@export_category("Dependencies")
+@export var trail_scene: PackedScene
 @export var trails: Node2D
-@onready var sprite := $Sprite2D
-var trail: Crack
+@export var spawn_point: Sprite2D # absolutely horrid architecture!
 
-var _is_active: bool = true
-var _is_drawing: bool = false
+@export_category("Bike properties")
+@export var MAX_HEALTH: float = 5.
+@export var MAX_POWER: float = 1.
+@export var health: float = MAX_HEALTH
+@export var power: float = 1.
 
-var death_tween: Tween = null
-var respawn_tween: Tween = null
+@export_subgroup("Handling")
+@export var MIN_SPEED: float = 700.0
+@export var MAX_SPEED: float = 2500.0
+@export var ROTATION_SPEED: float = 10.0 # radians per second
+@export var SENSITIVITY: float = 4.3
+@export var MOBILE_JOYSTICK_SENSITIVITY: float = 600.
+@export var CURSOR_DEADZONE: float = 10.0
 
-var MAX_POWER: float = 1.
-var power: float = 1.
-var POWER_COST: float = 0.0005/5
+@export_subgroup("Trail", "POWER_")
+@export var POWER_DRAIN_RATE: float = 0.0005 / 5
+@export var POWER_RECHARGE_VELOCITY: float = 2200.
+@export var POWER_RECHARGE_RATE: float = 0.275
 
-var MAX_HEALTH: float = 5.
-var health: float = MAX_HEALTH
+@export_subgroup("Visuals")
+@export var fall_animation_config: FallAnimationConfig
 
-var RECHARGE_VEL: float = 2200.
-var RECHARGE_AMOUNT: float = 0.275
+# onready variables
+@onready var alert_rect: ColorRect = $Camera2D/CanvasLayer/AlertRect
+@onready var camera: Camera2D = $Camera2D
+@onready var sprite: Sprite2D = $Sprite2D
+@onready var pointer: Node2D = $Pointer
 
-var prev_pos: Vector2 = Vector2.ZERO
-
+## audio
 @onready var drive_sound := $DriveSound
 @onready var draw_sound := $DrawSound
 @onready var power_full_sound := $PowerFullSound
@@ -32,32 +43,28 @@ var prev_pos: Vector2 = Vector2.ZERO
 @onready var hit_sound := $HitSound
 @onready var draw_start_sound := $DrawStartSound
 @onready var fall_sound := $FallSound
+var _pitch: float = 0.
 
-var pitch: float = 0.
-
-@export var spawn_point: Sprite2D # absolutely horrid architecture!
-"min_speed"
-var closest_enemy_pos: Vector2 = Vector2.ZERO
-var closest_enemy_dist: float = 1e10
-
-# i-frames
+# state variables
+var _is_active: bool = true
+var _is_drawing: bool = false
 var _is_invincible: bool = false
-var itween: Tween = null
 
-@export var min_speed: float = 700.0
-@export var max_speed: float = 2500.0
-@export var rotation_speed: float = 10.0  # radians per second
-@export var sensitivity: float = 4.3  # How strongly distance affects speed
+# tweens
+var _death_tween: Tween = null
+var _respawn_tween: Tween = null
+var _invincibility_tween: Tween = null
 
-@onready var alert_rect: ColorRect = $Camera2D/CanvasLayer/AlertRect
-@onready var camera: Camera2D = $Camera2D
+# data
+var _prev_pos: Vector2 = Vector2.ZERO
+var _trail: Trail
 
-var mouse_dir := Vector2.ZERO
-var mouse_distance := 0.
+var _closest_enemy_pos: Vector2 = Vector2.ZERO
+var _closest_enemy_dist: float = 1e10
 
-var target_pos := Vector2.ZERO
-
-var _platform_mobile := false
+var _mouse_dir := Vector2.ZERO
+var _mouse_distance := 0.
+var _target_pos := Vector2.ZERO
 
 func _ready() -> void:
 	_create_trail()
@@ -66,87 +73,105 @@ func _ready() -> void:
 	EventManager.shake_screen.connect(_shake_screen)
 	EventManager.wave_changed.connect(_on_wave_changed)
 
-	_platform_mobile = true if (OS.get_name() == "Android" or OS.has_feature("web_android") or OS.has_feature("web_ios")) else false
-	if _platform_mobile:
+	if Config.platform_mobile:
 		EventManager.draw_enabled.connect(_on_draw)
 		EventManager.draw_disabled.connect(_on_draw_release)
 	
 func _process(delta: float) -> void:
 	if _is_active:
-		if _platform_mobile:
-			target_pos = Input.get_vector("left", "right", "up", "down") * 600. + global_position
-			target_pos.x = clamp(target_pos.x, -3800, 3800)
-			target_pos.y = clamp(target_pos.y, -3800, 3800)
-		else:
-			target_pos = get_global_mouse_position()
+		_process_input()
+		_update_transform(delta)
+		_update_trail(delta)
 		
-		if (target_pos - global_position).length() > 10.0:
-			mouse_dir = target_pos - global_position
-			mouse_distance = mouse_dir.length()
+		_pitch = 1.2 - (MAX_SPEED - velocity.length()) / (MAX_SPEED - MIN_SPEED)
+		drive_sound.pitch_scale = _pitch
+		drive_sound.pitch_scale = _pitch
 
-		var target_rot = mouse_dir.angle() + PI/2
-		rotation = lerp_angle(rotation, target_rot, rotation_speed * delta)
+		_update_enemy_compass(delta)
+		_prev_pos = global_position
 
-		var speed = min_speed + min(mouse_distance * sensitivity * $Camera2D.zoom.x, max_speed - min_speed)
-		velocity = Vector2(cos(rotation-PI/2), sin(rotation-PI/2)) * speed
-		move_and_slide()
-
-		if not _platform_mobile and Input.is_action_just_pressed("draw") and not _is_drawing:
-			_on_draw()
-
-		if not _platform_mobile and Input.is_action_just_released("draw") and _is_drawing:
-			_on_draw_release()
-
-		if _is_drawing:
-			trail.add_point(global_position)
-			if trail.get_point_count() > 2:
-				power -= (global_position - prev_pos).length() * POWER_COST
-				if power < 0.:
-					power_empty_sound.play()
-					power = 0.
-					_is_drawing = false
-					_create_trail()
-					draw_sound.stop()
-		else:
-			if velocity.length() > RECHARGE_VEL and power < 1.:
-				power += RECHARGE_AMOUNT * delta
-				if power_charging_sound.has_stream_playback() == false:
-					draw_start_sound.play()
-					power_charging_sound.play()
-				if power > 1: 
-					power = 1.
-					power_charging_sound.stop()
-					power_full_sound.play()
+func _on_draw():
+	power_charging_sound.stop()
+	if power > 0.05:
+		_is_drawing = true
+		draw_sound.play()
+	else:
+		if not power_empty_sound.is_playing(): power_empty_sound.play()
 		
-		
-		if velocity.length() < RECHARGE_VEL:
-			power_charging_sound.stop()
-		
+func _on_draw_release():
+	_is_drawing = false
+	_create_trail()
+	draw_sound.stop()
+
+func _process_input() -> void:
+	if Config.platform_mobile:
+		_target_pos = Input.get_vector("left", "right", "up", "down") * MOBILE_JOYSTICK_SENSITIVITY + global_position
+		_target_pos.x = clamp(_target_pos.x, -Config.arena_xbound, Config.arena_xbound)
+		_target_pos.y = clamp(_target_pos.y, -Config.arena_ybound, Config.arena_ybound)
+	else:
+		_target_pos = get_global_mouse_position()
 	
-		pitch = clampf((global_position - prev_pos).length()/20. + 1., 1., 2.)
-		drive_sound.pitch_scale = pitch
-		drive_sound.pitch_scale = pitch
+	if (_target_pos - global_position).length() > CURSOR_DEADZONE:
+		_mouse_dir = _target_pos - global_position
+		_mouse_distance = _mouse_dir.length()
 
-		prev_pos = global_position
-		
-		if get_tree().get_nodes_in_group("enemies").size() > 0:
-			$Pointer.show()
-			for enemy in get_tree().get_nodes_in_group("enemies"):
-				var dist = (enemy.global_position - global_position).length()
-				if dist < closest_enemy_dist:
-					closest_enemy_dist = dist
-					closest_enemy_pos = enemy.global_position - global_position
-				
-			$Pointer.rotation = lerp_angle($Pointer.rotation, atan2(closest_enemy_pos.y, closest_enemy_pos.x) - rotation, 0.1)
-			closest_enemy_dist= 1e10
-		else:
-			$Pointer.hide()
+	if not Config.platform_mobile and Input.is_action_just_pressed("draw") and not _is_drawing:
+		_on_draw()
+
+	if not Config.platform_mobile and Input.is_action_just_released("draw") and _is_drawing:
+		_on_draw_release()
+
+func _update_transform(delta: float) -> void:
+	var _target_rot = _mouse_dir.angle() + PI / 2
+	rotation = lerp_angle(rotation, _target_rot, ROTATION_SPEED * delta)
+
+	var speed = MIN_SPEED + min(_mouse_distance * SENSITIVITY * camera.zoom.x, MAX_SPEED - MIN_SPEED)
+	velocity = Vector2(cos(rotation - PI / 2), sin(rotation - PI / 2)) * speed
+	move_and_slide()
+
+func _update_enemy_compass(delta: float) -> void:
+	if get_tree().get_nodes_in_group("enemies").size() > 0:
+		pointer.show()
+		for enemy in get_tree().get_nodes_in_group("enemies"):
+			var dist = (enemy.global_position - global_position).length()
+			if dist < _closest_enemy_dist:
+				_closest_enemy_dist = dist
+				_closest_enemy_pos = enemy.global_position - global_position
+			
+		pointer.rotation = lerp_angle(pointer.rotation, atan2(_closest_enemy_pos.y, _closest_enemy_pos.x) - rotation, 0.1)
+		_closest_enemy_dist = 1e10
+	else:
+		pointer.hide()
+
+func _update_trail(delta: float) -> void:
+	if _is_drawing:
+		_trail.add_point(global_position)
+		if _trail.get_point_count() > 2:
+			power -= (global_position - _prev_pos).length() * POWER_DRAIN_RATE
+			if power < 0.:
+				power_empty_sound.play()
+				power = 0.
+				_is_drawing = false
+				_create_trail()
+				draw_sound.stop()
+	else:
+		if velocity.length() > POWER_RECHARGE_VELOCITY and power < MAX_POWER:
+			power += POWER_RECHARGE_RATE * delta
+			if power_charging_sound.has_stream_playback() == false:
+				draw_start_sound.play()
+				power_charging_sound.play()
+			if power > 1:
+				power = 1.
+				power_charging_sound.stop()
+				power_full_sound.play()
 	
+	if velocity.length() < POWER_RECHARGE_VELOCITY:
+		power_charging_sound.stop()
+
 func _create_trail() -> void:
-	if trail: trail.destroy()
-
-	trail = crack_scene.instantiate()
-	trails.add_child.call_deferred(trail)
+	if _trail: _trail.destroy()
+	_trail = trail_scene.instantiate()
+	trails.add_child.call_deferred(_trail)
 
 func fall() -> void:
 	die()
@@ -160,37 +185,37 @@ func die() -> void:
 	drive_sound.stop()
 	power_charging_sound.stop()
 	$CollisionShape2D.set_deferred("disabled", true)
-	if death_tween: death_tween.kill() 
+	if _death_tween: _death_tween.kill()
 	
-	death_tween = get_tree().create_tween()
-	death_tween.set_parallel()
-	death_tween.tween_property(self, "rotation", rotation + 3*PI, 1)
-	death_tween.tween_property(self, "scale", Vector2(0., 0.), 1)
-	death_tween.tween_property(self, "modulate:a", 0., 1)
-	death_tween.set_parallel(false)
-	death_tween.tween_callback(
-		func(): 
+	_death_tween = get_tree().create_tween()
+	_death_tween.set_parallel()
+	_death_tween.tween_property(self, "rotation", rotation + 3 * PI, 1)
+	_death_tween.tween_property(self, "scale", Vector2(0., 0.), 1)
+	_death_tween.tween_property(self, "modulate:a", 0., 1)
+	_death_tween.set_parallel(false)
+	_death_tween.tween_callback(
+		func():
 			damage(2)
 			respawn()
 			)
 			
 func respawn() -> void:
 	_create_trail()
-	if respawn_tween: respawn_tween.kill()
+	if _respawn_tween: _respawn_tween.kill()
 	modulate.a = 1.
-	respawn_tween = get_tree().create_tween()
-	respawn_tween.tween_property(self, "global_position", Vector2.ZERO, 1)
-	respawn_tween.tween_property(spawn_point, "modulate:a", 1., 0.25)
-	respawn_tween.tween_property(self, "scale", Vector2(1, 1), 0.5)
-	respawn_tween.tween_property(spawn_point, "modulate:a", 0.2, 0.5)
-	respawn_tween.tween_callback(
+	_respawn_tween = get_tree().create_tween()
+	_respawn_tween.tween_property(self, "global_position", Vector2.ZERO, 1)
+	_respawn_tween.tween_property(spawn_point, "modulate:a", 1., 0.25)
+	_respawn_tween.tween_property(self, "scale", Vector2(1, 1), 0.5)
+	_respawn_tween.tween_property(spawn_point, "modulate:a", 0.2, 0.5)
+	_respawn_tween.tween_callback(
 		func():
 			_is_active = true
 			drive_sound.play()
 			_activate_invincibility()
 			$CollisionShape2D.set_deferred("disabled", false)
 	)
-	respawn_tween.tween_method(func(val): power = val, power, 1., 1. * (1 - power))
+	_respawn_tween.tween_method(func(val): power = val, power, 1., 1. * (1 - power))
 
 func hit(val) -> void:
 	if not _is_invincible:
@@ -206,32 +231,38 @@ func damage(val) -> void:
 	
 func _activate_invincibility(duration: float = 4) -> void:
 	_is_invincible = true
-	if itween: itween.kill()
-	itween = get_tree().create_tween()
+	if _invincibility_tween: _invincibility_tween.kill()
+	_invincibility_tween = get_tree().create_tween()
+	
 	for i in range(duration):
-		itween.tween_property(sprite.material, "shader_parameter/overlay_strength", 0.8, 0.1)
-		itween.tween_property(sprite.material, "shader_parameter/overlay_strength", 0.0, 0.1)
+		_invincibility_tween.tween_property(sprite.material, "shader_parameter/overlay_strength", 0.8, 0.1)
+		_invincibility_tween.tween_property(sprite.material, "shader_parameter/overlay_strength", 0.0, 0.1)
 
-	itween.chain().tween_callback(func(): _is_invincible = false)
+	_invincibility_tween.chain().tween_callback(func(): _is_invincible = false)
 
 func _shake_screen() -> void:
-	$Camera2D.screen_shake(8, 0.5)
+	camera.screen_shake(8, 0.5)
 
 func add_health(val: float) -> void:
 	health = min(MAX_HEALTH, health + val)
 	EventManager.player_health_changed.emit()
 
 func death() -> void:
-	$Sprite2D.hide()
-	$DeathSound.play()
-	$DeathAnimation.show()
-	$DeathAnimation.play()
+	# state
 	_is_active = false
 	_is_drawing = false
+	$CollisionShape2D.set_deferred("disabled", true)
+
+	# visuals
+	sprite.hide()
+	$DeathAnimation.show()
+	$DeathAnimation.play()
+	$DeathAnimation.animation_finished.connect(func(): EventManager.game_over.emit())
+
+	# audio
+	$DeathSound.play()
 	draw_sound.stop()
 	drive_sound.stop()
-	$CollisionShape2D.set_deferred("disabled", true)
-	$DeathAnimation.animation_finished.connect(func(): EventManager.game_over.emit())
 
 func _on_wave_changed(wave: int) -> void:
 	return
@@ -239,15 +270,5 @@ func _on_wave_changed(wave: int) -> void:
 func _update_alert() -> void:
 	pass
 
-func _on_draw():
-	power_charging_sound.stop()
-	if power > 0.05:
-		_is_drawing = true
-		draw_sound.play()
-	else:
-		if not power_empty_sound.is_playing(): power_empty_sound.play()
-		
-func _on_draw_release():
-	_is_drawing = false
-	_create_trail()
-	draw_sound.stop()
+func is_vulnerable() -> bool:
+	return _trail.get_point_count() > 10 and velocity.length() > 1100.

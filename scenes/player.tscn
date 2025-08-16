@@ -1,7 +1,8 @@
-[gd_scene load_steps=40 format=3 uid="uid://cvua0fel5ydtv"]
+[gd_scene load_steps=42 format=3 uid="uid://cvua0fel5ydtv"]
 
 [ext_resource type="Script" uid="uid://bbted26h1x1jq" path="res://scripts/player.gd" id="1_i3pqv"]
-[ext_resource type="PackedScene" uid="uid://b646gc67qmx4m" path="res://scenes/crack.tscn" id="2_hqtel"]
+[ext_resource type="PackedScene" uid="uid://b646gc67qmx4m" path="res://scenes/trail.tscn" id="2_hqtel"]
+[ext_resource type="Script" uid="uid://p0s2wxxv800u" path="res://scripts/fall_animation_config.gd" id="3_4r5pv"]
 [ext_resource type="Texture2D" uid="uid://34g1x2wjotod" path="res://assets/art/death_anim_v1.png" id="3_oprun"]
 [ext_resource type="Texture2D" uid="uid://cqro5ie6mvm0b" path="res://assets/art/tron_bike_v1.png" id="3_sweqy"]
 [ext_resource type="Shader" uid="uid://6wfc0a2pnfog" path="res://scenes/invincibility.gdshader" id="3_tuyoq"]
@@ -18,6 +19,16 @@
 [ext_resource type="AudioStream" uid="uid://b428pqlgglfl" path="res://assets/sfx/Spiral long.mp3" id="11_f1ej7"]
 [ext_resource type="AudioStream" uid="uid://b4ax4tm3dvanm" path="res://assets/sfx/Explosion.mp3" id="13_a8ls1"]
 [ext_resource type="Shader" uid="uid://blholyw1gnju3" path="res://assets/shaders/warning.gdshader" id="15_qfm1y"]
+
+[sub_resource type="Resource" id="Resource_60mlk"]
+script = ExtResource("3_4r5pv")
+angle_duration = 1.0
+scale_duration = 1.0
+alpha_duration = 1.0
+angle_target = 9.42478
+scale_target = Vector2(0, 0)
+alpha_target = 0.0
+metadata/_custom_type_script = "uid://p0s2wxxv800u"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_a8ls1"]
 atlas = ExtResource("3_oprun")
@@ -188,7 +199,9 @@ shader_parameter/vignette_opacity = 0.5
 collision_layer = 7
 collision_mask = 0
 script = ExtResource("1_i3pqv")
-crack_scene = ExtResource("2_hqtel")
+trail_scene = ExtResource("2_hqtel")
+health = 5.0
+fall_animation_config = SubResource("Resource_60mlk")
 metadata/_edit_group_ = true
 
 [node name="DeathAnimation" type="AnimatedSprite2D" parent="."]
