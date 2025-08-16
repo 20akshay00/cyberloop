@@ -33,6 +33,7 @@ class_name Player
 @onready var camera: Camera2D = $Camera2D
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var pointer: Node2D = $Pointer
+@onready var collision_shape: CollisionShape2D = $CollisionShape2D
 
 ## audio
 @onready var drive_sound := $DriveSound
@@ -46,7 +47,19 @@ class_name Player
 var _pitch: float = 0.
 
 # state variables
-var _is_active: bool = true
+var _is_active: bool :
+	set(val):
+		if val:
+			if collision_shape: collision_shape.set_deferred("disabled", false)
+			if drive_sound: drive_sound.play()
+		else:
+			_is_drawing = false
+			if collision_shape: collision_shape.set_deferred("disabled", true)
+			if draw_sound: draw_sound.stop()
+			if drive_sound: drive_sound.stop()
+
+		_is_active = val
+
 var _is_drawing: bool = false
 var _is_invincible: bool = false
 
@@ -173,36 +186,29 @@ func _create_trail() -> void:
 	_trail = trail_scene.instantiate()
 	trails.add_child.call_deferred(_trail)
 
-func fall() -> void:
-	die()
-	fall_sound.play()
-
-func die() -> void:
+func fall(damage_val: int = 2) -> void:
+	# state
 	_is_active = false
-	_is_drawing = false
-	
+
+	# audio
+	fall_sound.play()	
 	draw_sound.stop()
 	drive_sound.stop()
 	power_charging_sound.stop()
-	$CollisionShape2D.set_deferred("disabled", true)
+
 	if _death_tween: _death_tween.kill()
-	
-	_death_tween = get_tree().create_tween()
-	_death_tween.set_parallel()
-	_death_tween.tween_property(self, "rotation", rotation + 3 * PI, 1)
-	_death_tween.tween_property(self, "scale", Vector2(0., 0.), 1)
-	_death_tween.tween_property(self, "modulate:a", 0., 1)
-	_death_tween.set_parallel(false)
+	_death_tween = Utils.play_fall_animation(self)
 	_death_tween.tween_callback(
 		func():
-			damage(2)
+			damage(damage_val)
 			respawn()
 			)
-			
+
 func respawn() -> void:
 	_create_trail()
-	if _respawn_tween: _respawn_tween.kill()
 	modulate.a = 1.
+	
+	if _respawn_tween: _respawn_tween.kill()
 	_respawn_tween = get_tree().create_tween()
 	_respawn_tween.tween_property(self, "global_position", Vector2.ZERO, 1)
 	_respawn_tween.tween_property(spawn_point, "modulate:a", 1., 0.25)
@@ -211,10 +217,9 @@ func respawn() -> void:
 	_respawn_tween.tween_callback(
 		func():
 			_is_active = true
-			drive_sound.play()
 			_activate_invincibility()
-			$CollisionShape2D.set_deferred("disabled", false)
 	)
+	
 	_respawn_tween.tween_method(func(val): power = val, power, 1., 1. * (1 - power))
 
 func hit(val) -> void:
@@ -248,10 +253,7 @@ func add_health(val: float) -> void:
 	EventManager.player_health_changed.emit()
 
 func death() -> void:
-	# state
 	_is_active = false
-	_is_drawing = false
-	$CollisionShape2D.set_deferred("disabled", true)
 
 	# visuals
 	sprite.hide()
@@ -261,8 +263,6 @@ func death() -> void:
 
 	# audio
 	$DeathSound.play()
-	draw_sound.stop()
-	drive_sound.stop()
 
 func _on_wave_changed(wave: int) -> void:
 	return

@@ -1,11 +1,22 @@
-[gd_scene load_steps=16 format=3 uid="uid://0287u7bkbm56"]
+[gd_scene load_steps=18 format=3 uid="uid://0287u7bkbm56"]
 
 [ext_resource type="Script" uid="uid://25tlmv4ec75s" path="res://scripts/proximity_mine.gd" id="1_fck1g"]
 [ext_resource type="Texture2D" uid="uid://b8e51tbtfk7x3" path="res://assets/art/proximity_mine_v1.png" id="1_lwjlu"]
 [ext_resource type="Texture2D" uid="uid://bkhwwa5xadhn4" path="res://assets/art/proximity_mine_light_v1.png" id="2_fck1g"]
+[ext_resource type="Script" uid="uid://p0s2wxxv800u" path="res://scripts/fall_animation_config.gd" id="2_u3bxi"]
 [ext_resource type="Texture2D" uid="uid://w6kplvfdaudc" path="res://assets/art/proximity_mine_range_line_v1.png" id="4_n8pgp"]
 [ext_resource type="Texture2D" uid="uid://bf667fh16sk6k" path="res://assets/art/explosion_anim_v2.png" id="5_n6sr2"]
 [ext_resource type="AudioStream" uid="uid://b4ax4tm3dvanm" path="res://assets/sfx/Explosion.mp3" id="6_7d6rn"]
+
+[sub_resource type="Resource" id="Resource_kvxx3"]
+script = ExtResource("2_u3bxi")
+angle_duration = 1.0
+scale_duration = 1.0
+alpha_duration = 1.0
+angle_target = 9.42478
+scale_target = Vector2(0, 0)
+alpha_target = 0.0
+metadata/_custom_type_script = "uid://p0s2wxxv800u"
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_lwjlu"]
 radius = 117.0
@@ -70,6 +81,7 @@ animations = [{
 [node name="ProximityMine" type="Area2D"]
 collision_layer = 2
 script = ExtResource("1_fck1g")
+fall_animation_config = SubResource("Resource_kvxx3")
 
 [node name="MineSprite" type="Sprite2D" parent="."]
 scale = Vector2(3, 3)
