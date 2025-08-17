@@ -1,5 +1,8 @@
 extends Area2D
 
+@export_subgroup("Visuals")
+@export var fall_animation_config: FallAnimationConfig
+
 @export var health = 1
 
 var tween: Tween = null

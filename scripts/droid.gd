@@ -1,6 +1,9 @@
 extends CharacterBody2D
 class_name Droid
 
+@export_subgroup("Visuals")
+@export var fall_animation_config: FallAnimationConfig
+
 @onready var shoot_timer = $ShootTimer
 @export var projectile_scene: PackedScene
 
@@ -42,10 +45,9 @@ func _on_shoot_timer_timeout() -> void:
 
 func set_fall_state() -> void:
 	if not _is_active: return 
-	
-	EventManager.enemy_died.emit()
 	_death_tween = Utils.play_fall_animation(self, _death_tween)
 	_is_active = false
+	EventManager.enemy_died.emit()
 
 func on_fall_completed() -> void:
 	queue_free()

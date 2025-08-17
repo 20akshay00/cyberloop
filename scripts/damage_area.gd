@@ -13,7 +13,7 @@ func _ready() -> void:
 				body.set_fall_state()
 				
 			for area in get_overlapping_areas():
-				if area.has_method("fall"): area.set_fall_state()
+				if area.has_method("set_fall_state"): area.set_fall_state()
 	)
 	fade_in()
 

@@ -1,9 +1,20 @@
-[gd_scene load_steps=7 format=3 uid="uid://b1k1si4vlki42"]
+[gd_scene load_steps=9 format=3 uid="uid://b1k1si4vlki42"]
 
 [ext_resource type="Script" uid="uid://d2lvnjcuwsoxy" path="res://scripts/droid.gd" id="1_3qyvh"]
 [ext_resource type="PackedScene" uid="uid://cx6x2pwoqp8mm" path="res://scenes/projectile.tscn" id="2_b6sar"]
+[ext_resource type="Script" uid="uid://p0s2wxxv800u" path="res://scripts/fall_animation_config.gd" id="2_bwfj3"]
 [ext_resource type="Texture2D" uid="uid://dn5pmbswkuxau" path="res://assets/art/droid_one_v1.png" id="2_jmph3"]
 [ext_resource type="AudioStream" uid="uid://clpx4kmaxqc3y" path="res://assets/sfx/Enemy shooting.mp3" id="4_lu340"]
+
+[sub_resource type="Resource" id="Resource_svcmp"]
+script = ExtResource("2_bwfj3")
+angle_duration = 1.0
+scale_duration = 1.0
+alpha_duration = 1.0
+angle_target = 9.42478
+scale_target = Vector2(0, 0)
+alpha_target = 0.0
+metadata/_custom_type_script = "uid://p0s2wxxv800u"
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jmph3"]
 radius = 1211.44
@@ -15,6 +26,7 @@ radius = 27.0185
 collision_layer = 2
 collision_mask = 0
 script = ExtResource("1_3qyvh")
+fall_animation_config = SubResource("Resource_svcmp")
 projectile_scene = ExtResource("2_b6sar")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

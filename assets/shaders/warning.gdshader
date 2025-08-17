@@ -74,6 +74,6 @@ void fragment() {
 	}
 
 	intensity = intensity * smoothstep(0.0, 0.15, intensity);
-	
+
 	COLOR = vec4(flash_color.rgb, flash_color.a * intensity * flash_strength);
 }
