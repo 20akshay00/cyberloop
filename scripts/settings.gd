@@ -11,7 +11,10 @@ extends Control
 @onready var rotation_slider: HSlider = $VBoxContainer/Sensitivity/RotationSensitivity/RotationSlider
 @onready var acc_slider: HSlider = $VBoxContainer/Sensitivity/AccSensitivity/AccSlider
 @onready var mouse_slider: HSlider = $VBoxContainer/Sensitivity/MouseSensitivity/MouseSlider
-@onready var check_box: CheckBox = $VBoxContainer/Visuals/CheckBox
+@onready var crt_check_box: CheckButton = $VBoxContainer/Visuals/CRTCheckBox
+
+@onready var music_slider: HSlider = $VBoxContainer/VolumeControls/Music/MusicSlider
+@onready var sfx_slider: HSlider = $VBoxContainer/VolumeControls/SFX/SFXSlider
 
 var button_map: Dictionary
 var tween: Tween
@@ -38,7 +41,7 @@ func _ready():
 	mouse_slider.value = Config.cursor_sensitivity
 	acc_slider.value = Config.acceleration_sensitivity
 	rotation_slider.value = Config.rotation_sensitivity
-	check_box.button_pressed = Config.crt_enabled
+	crt_check_box.button_pressed = Config.crt_enabled
 
 func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("exit"):
@@ -102,3 +105,14 @@ func _on_mouse_slider_value_changed(value: float) -> void:
 func _on_check_box_toggled(toggled_on: bool) -> void:
 	Config.crt_enabled = toggled_on
 	EventManager.crt_toggled.emit(toggled_on)
+
+func _on_reset_button_pressed() -> void:
+	Config.reset()
+	acc_slider.value = Config.acceleration_sensitivity
+	rotation_slider.value = Config.rotation_sensitivity
+	mouse_slider.value = Config.cursor_sensitivity
+	crt_check_box.button_pressed = Config.crt_enabled
+	_update_buttons(Config.control_scheme)
+
+	music_slider.value = 1.
+	sfx_slider.value = 1.

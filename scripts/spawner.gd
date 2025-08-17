@@ -114,7 +114,6 @@ func _change_wave() -> void:
 func _check_enemies() -> void:
 	$CheckTimer.start()
 
-
 func _start_enemy_spawn() -> void:
 	for i in enemy_count:
 		_spawn_enemy()
@@ -169,4 +168,3 @@ func _spawn_pickup(pos: Vector2) -> void:
 func _on_check_timer_timeout() -> void:
 	if (enemies.get_child_count() == 0) and spawn_complete:
 		_change_wave()
-		#get_tree().create_timer(2).timeout.connect(func(): _change_wave())

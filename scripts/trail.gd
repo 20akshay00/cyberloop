@@ -44,7 +44,7 @@ func _process(delta: float) -> void:
 	if intersect_idx >= 0:
 		shape_points = points.slice(intersect_idx, points.size() - 1)
 		
-		if calculate_area(shape_points) > 5000:
+		if calculate_area(shape_points) > 6000:
 			if (Geometry2D.intersect_polygons(shape_points, spawn_area).size() == 0) and (Geometry2D.decompose_polygon_in_convex(shape_points).size() > 0):
 					var damage_area = damage_area_scene.instantiate()
 					damage_area.set_points(shape_points)

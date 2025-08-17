@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://c2yidqjagbkrb"]
+[gd_scene load_steps=25 format=3 uid="uid://c2yidqjagbkrb"]
 
 [ext_resource type="Script" uid="uid://d1e3vu4scial2" path="res://scenes/world.gd" id="1_qfnet"]
 [ext_resource type="Texture2D" uid="uid://c3284varj7i2o" path="res://assets/art/background_v2.png" id="2_4mrxx"]
@@ -15,6 +15,7 @@
 [ext_resource type="Texture2D" uid="uid://douaksfsgn5wr" path="res://assets/art/health_stamina_bar_frame_v1.png" id="7_i7141"]
 [ext_resource type="PackedScene" uid="uid://0287u7bkbm56" path="res://scenes/proximity_mine.tscn" id="8_7r4gi"]
 [ext_resource type="FontFile" uid="uid://cmmi1q3juj7cv" path="res://assets/fonts/PixelOperator-Bold.ttf" id="8_lakw3"]
+[ext_resource type="Texture2D" uid="uid://b5r80tma1wekj" path="res://assets/art/settings_alt.png" id="8_oo54l"]
 [ext_resource type="Texture2D" uid="uid://b7agburjl2awr" path="res://assets/art/cyberlooop_title_v1.png" id="9_dss4m"]
 [ext_resource type="PackedScene" uid="uid://dmr0fcamx7t56" path="res://addons/virtual_joystick/virtual_joystick_scene.tscn" id="10_pm21f"]
 [ext_resource type="PackedScene" uid="uid://1yd7cnuk8exk" path="res://scenes/settings.tscn" id="11_2lf6f"]
@@ -103,6 +104,8 @@ grow_vertical = 0
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 texture_normal = ExtResource("7_7iits")
+texture_pressed = ExtResource("8_oo54l")
+texture_hover = ExtResource("8_oo54l")
 stretch_mode = 5
 
 [node name="VSeparator" type="VSeparator" parent="UI/HBoxContainer"]
@@ -203,14 +206,14 @@ process_mode = 2
 visible = false
 modulate = Color(1, 1, 1, 0)
 
-[node name="Parallax2D" type="Parallax2D" parent="."]
+[node name="Background" type="Parallax2D" parent="."]
 scroll_offset = Vector2(272, 171)
 repeat_size = Vector2(960, 960)
 repeat_times = 3
 metadata/_edit_group_ = true
 metadata/_edit_lock_ = true
 
-[node name="Sprite2D" type="Sprite2D" parent="Parallax2D"]
+[node name="Sprite2D" type="Sprite2D" parent="Background"]
 texture_repeat = 2
 texture = ExtResource("2_4mrxx")
 centered = false

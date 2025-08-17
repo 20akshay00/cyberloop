@@ -60,10 +60,6 @@ func set_high_score(score: int):
 
 func set_score(score: int):
 	score_label.text = "Score: " + str(score)
-	#if score_tween: score_tween.kill()
-	#score_tween = get_tree().create_tween()
-	#score_tween.tween_property(score_label, "scale", Vector2(1.2, 1.2), 0.5)
-	#score_tween.tween_property(score_label, "scale", Vector2(1., 1.), 0.5)
 
 func set_wave(wave: int):
 	$WaveLabel.text = "Wave " + str(wave)

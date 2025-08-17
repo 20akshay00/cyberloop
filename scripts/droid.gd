@@ -1,17 +1,16 @@
 extends CharacterBody2D
 class_name Droid
 
-@export_subgroup("Visuals")
+@export var projectile_scene: PackedScene
 @export var fall_animation_config: FallAnimationConfig
 
 @onready var shoot_timer = $ShootTimer
-@export var projectile_scene: PackedScene
+var _death_tween: Tween = null 
 
 var target: Player = null
 var dir: Vector2 = Vector2.ZERO
 
-var _death_tween: Tween = null 
-var _is_active = true
+var _is_active: bool = true
 
 func _ready() -> void:
 	modulate.a = 0.

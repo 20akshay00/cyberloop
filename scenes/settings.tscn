@@ -87,7 +87,7 @@ theme_override_fonts/font = ExtResource("1_5p8wc")
 theme_override_font_sizes/font_size = 32
 text = "Music"
 
-[node name="HSlider" type="HSlider" parent="VBoxContainer/VolumeControls/Music"]
+[node name="MusicSlider" type="HSlider" parent="VBoxContainer/VolumeControls/Music"]
 custom_minimum_size = Vector2(650, 0)
 layout_mode = 2
 size_flags_horizontal = 8
@@ -110,7 +110,7 @@ theme_override_fonts/font = ExtResource("1_5p8wc")
 theme_override_font_sizes/font_size = 32
 text = "SFX"
 
-[node name="HSlider" type="HSlider" parent="VBoxContainer/VolumeControls/SFX"]
+[node name="SFXSlider" type="HSlider" parent="VBoxContainer/VolumeControls/SFX"]
 custom_minimum_size = Vector2(650, 0)
 layout_mode = 2
 size_flags_horizontal = 8
@@ -226,7 +226,7 @@ theme_override_font_sizes/font_size = 32
 text = "Visuals"
 horizontal_alignment = 1
 
-[node name="CheckBox" type="CheckBox" parent="VBoxContainer/Visuals"]
+[node name="CRTCheckBox" type="CheckButton" parent="VBoxContainer/Visuals"]
 layout_mode = 2
 theme_override_constants/h_separation = 20
 theme_override_fonts/font = ExtResource("1_5p8wc")
@@ -293,10 +293,27 @@ toggle_mode = true
 texture_normal = ExtResource("3_6wm04")
 stretch_mode = 5
 
+[node name="HSeparator4" type="HSeparator" parent="VBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="ResetButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_hover_pressed_color = Color(0.403922, 0.776471, 0.776471, 1)
+theme_override_colors/font_hover_color = Color(0.403922, 0.776471, 0.776471, 1)
+theme_override_colors/font_pressed_color = Color(0.240952, 0.54577, 0.546294, 1)
+theme_override_fonts/font = ExtResource("1_5p8wc")
+theme_override_font_sizes/font_size = 32
+text = "Reset to default"
+flat = true
+
 [connection signal="value_changed" from="VBoxContainer/Sensitivity/MouseSensitivity/MouseSlider" to="." method="_on_mouse_slider_value_changed"]
 [connection signal="value_changed" from="VBoxContainer/Sensitivity/RotationSensitivity/RotationSlider" to="." method="_on_rotation_slider_value_changed"]
 [connection signal="value_changed" from="VBoxContainer/Sensitivity/AccSensitivity/AccSlider" to="." method="_on_acc_slider_value_changed"]
-[connection signal="toggled" from="VBoxContainer/Visuals/CheckBox" to="." method="_on_check_box_toggled"]
+[connection signal="toggled" from="VBoxContainer/Visuals/CRTCheckBox" to="." method="_on_check_box_toggled"]
 [connection signal="toggled" from="VBoxContainer/ControlScheme/Buttons/MouseButton" to="." method="_on_mouse_button_toggled"]
 [connection signal="toggled" from="VBoxContainer/ControlScheme/Buttons/KeyboardButton" to="." method="_on_keyboard_button_toggled"]
 [connection signal="toggled" from="VBoxContainer/ControlScheme/Buttons/ControllerButton" to="." method="_on_controller_button_toggled"]
+[connection signal="pressed" from="VBoxContainer/ResetButton" to="." method="_on_reset_button_pressed"]

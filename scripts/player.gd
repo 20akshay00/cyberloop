@@ -14,12 +14,12 @@ class_name Player
 @export_subgroup("Handling")
 @export var MIN_SPEED: float = 700.0
 @export var MAX_SPEED: float = 2500.0
-@export var ROTATION_SPEED: float = 10.0 # radians per second
+@export var ROTATION_SPEED: float = 1.1 # radians per second
 
 @export var CURSOR_DEADZONE: float = 10.0
 
 @export_subgroup("Trail", "POWER_")
-@export var POWER_DRAIN_RATE: float = 0.0005 / 5
+@export var POWER_DRAIN_RATE: float = 1e-4
 @export var POWER_RECHARGE_VELOCITY: float = 2200.
 @export var POWER_RECHARGE_RATE: float = 0.275
 
@@ -141,7 +141,7 @@ func _process_input(delta: float) -> void:
 
 func _update_transform(delta: float) -> void:
 	var _target_rot = _mouse_dir.angle() + PI / 2
-	rotation = lerp_angle(rotation, _target_rot, ROTATION_SPEED * delta)
+	rotation = lerp_angle(rotation, _target_rot, 1.0 - pow(0.001, delta * ROTATION_SPEED))
 
 	var speed = MIN_SPEED + min(_mouse_distance * Config.cursor_sensitivity * camera.zoom.x, MAX_SPEED - MIN_SPEED)
 	velocity = Vector2(cos(rotation - PI / 2), sin(rotation - PI / 2)) * speed
@@ -165,7 +165,7 @@ func _update_trail(delta: float) -> void:
 	if _is_drawing:
 		_trail.add_point(global_position)
 		if _trail.get_point_count() > 2:
-			power -= (global_position - _prev_pos).length() * POWER_DRAIN_RATE
+			power -= velocity.length() * delta * POWER_DRAIN_RATE
 			if power < 0.:
 				power_empty_sound.play()
 				power = 0.
@@ -205,12 +205,12 @@ func set_fall_state(damage_val: int = 2) -> void:
 	power_charging_sound.stop()
 
 	Utils.play_fall_animation(self, _death_tween)
+	damage(2)
 
 	# state
 	_is_active = false
 
 func on_fall_completed() -> void:
-	damage(2)
 	respawn()
 
 func respawn() -> void:
@@ -281,3 +281,7 @@ func _update_alert() -> void:
 
 func is_vulnerable() -> bool:
 	return _trail.get_point_count() > 10 and velocity.length() > 1100.
+
+func _notification(what):
+	if what == NOTIFICATION_PAUSED:
+		_on_draw_release()
