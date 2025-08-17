@@ -22,18 +22,14 @@ func _ready() -> void:
 	_is_active = false
 	spawn()
 
-func fall() -> void:
-	if _is_active:
-		_is_active = false
-		if death_tween: death_tween.kill() 
-		
-		death_tween = get_tree().create_tween()
-		death_tween.set_parallel()
-		death_tween.tween_property(self, "rotation", rotation + 3*PI, 1)
-		death_tween.tween_property(self, "scale", Vector2(0., 0.), 1)
-		death_tween.tween_property(self, "modulate:a", 0., 1)
-		death_tween.set_parallel(false)
-		death_tween.tween_callback(queue_free)
+func set_fall_state() -> void:
+	if not _is_active: return 
+	
+	Utils.play_fall_animation(self)
+	_is_active = false
+
+func on_fall_completed() -> void:
+	queue_free()
 
 func spawn() -> void:
 	var spawn_tween = get_tree().create_tween()

@@ -1,12 +1,11 @@
 extends CharacterBody2D
 class_name Player
 
-@export_category("Dependencies")
 @export var trail_scene: PackedScene
 @export var trails: Node2D
 @export var spawn_point: Sprite2D # absolutely horrid architecture!
 
-@export_category("Bike properties")
+@export_subgroup("Attributes")
 @export var MAX_HEALTH: float = 5.
 @export var MAX_POWER: float = 1.
 @export var health: float = MAX_HEALTH
@@ -16,8 +15,7 @@ class_name Player
 @export var MIN_SPEED: float = 700.0
 @export var MAX_SPEED: float = 2500.0
 @export var ROTATION_SPEED: float = 10.0 # radians per second
-@export var SENSITIVITY: float = 4.3
-@export var MOBILE_JOYSTICK_SENSITIVITY: float = 600.
+
 @export var CURSOR_DEADZONE: float = 10.0
 
 @export_subgroup("Trail", "POWER_")
@@ -27,6 +25,10 @@ class_name Player
 
 @export_subgroup("Visuals")
 @export var fall_animation_config: FallAnimationConfig
+
+@export_subgroup("Audio")
+@export var MIN_PITCH: float = 1.
+@export var MAX_PITCH: float = 2.
 
 # onready variables
 @onready var alert_rect: ColorRect = $Camera2D/CanvasLayer/AlertRect
@@ -77,11 +79,10 @@ var _closest_enemy_dist: float = 1e10
 
 var _mouse_dir := Vector2.ZERO
 var _mouse_distance := 0.
-var _target_pos := Vector2.ZERO
+var _target_pos := Vector2(2 * CURSOR_DEADZONE, 0.)
 
 func _ready() -> void:
-	_create_trail()
-	
+	_create_trail()	
 	drive_sound.play()
 	EventManager.shake_screen.connect(_shake_screen)
 	EventManager.wave_changed.connect(_on_wave_changed)
@@ -92,13 +93,10 @@ func _ready() -> void:
 	
 func _process(delta: float) -> void:
 	if _is_active:
-		_process_input()
+		_process_input(delta)
 		_update_transform(delta)
 		_update_trail(delta)
-		
-		_pitch = 1.2 - (MAX_SPEED - velocity.length()) / (MAX_SPEED - MIN_SPEED)
-		drive_sound.pitch_scale = _pitch
-		drive_sound.pitch_scale = _pitch
+		_update_pitch()
 
 		_update_enemy_compass(delta)
 		_prev_pos = global_position
@@ -116,13 +114,20 @@ func _on_draw_release():
 	_create_trail()
 	draw_sound.stop()
 
-func _process_input() -> void:
-	if Config.platform_mobile:
-		_target_pos = Input.get_vector("left", "right", "up", "down") * MOBILE_JOYSTICK_SENSITIVITY + global_position
+func _process_input(delta: float) -> void:
+	if Config.control_scheme == PlayerConfig.CONTROL_SCHEMES.TOUCHSCREEN:
+		_target_pos = Input.get_vector("left", "right", "up", "down") * Config.mobile_joystick_sensitivity + global_position
 		_target_pos.x = clamp(_target_pos.x, -Config.arena_xbound, Config.arena_xbound)
 		_target_pos.y = clamp(_target_pos.y, -Config.arena_ybound, Config.arena_ybound)
-	else:
+		
+	elif Config.control_scheme == PlayerConfig.CONTROL_SCHEMES.MOUSE:
 		_target_pos = get_global_mouse_position()
+		
+	elif Config.control_scheme == PlayerConfig.CONTROL_SCHEMES.KEYBOARD:
+		var angle = lerp_angle(_target_pos.angle(), _target_pos.angle() + delta * Input.get_axis("rotate_ccw", "rotate_cw") * Config.rotation_sensitivity, 0.9)
+		_target_pos = _target_pos.rotated(angle - _target_pos.angle())
+		
+		_target_pos *= clamp(_target_pos.length() + Input.get_axis("deccelerate", "accelerate") * Config.acceleration_sensitivity * delta, CURSOR_DEADZONE * 2., 2000.)/_target_pos.length()
 	
 	if (_target_pos - global_position).length() > CURSOR_DEADZONE:
 		_mouse_dir = _target_pos - global_position
@@ -138,7 +143,7 @@ func _update_transform(delta: float) -> void:
 	var _target_rot = _mouse_dir.angle() + PI / 2
 	rotation = lerp_angle(rotation, _target_rot, ROTATION_SPEED * delta)
 
-	var speed = MIN_SPEED + min(_mouse_distance * SENSITIVITY * camera.zoom.x, MAX_SPEED - MIN_SPEED)
+	var speed = MIN_SPEED + min(_mouse_distance * Config.cursor_sensitivity * camera.zoom.x, MAX_SPEED - MIN_SPEED)
 	velocity = Vector2(cos(rotation - PI / 2), sin(rotation - PI / 2)) * speed
 	move_and_slide()
 
@@ -181,28 +186,32 @@ func _update_trail(delta: float) -> void:
 	if velocity.length() < POWER_RECHARGE_VELOCITY:
 		power_charging_sound.stop()
 
+func _update_pitch() -> void:
+	_pitch = MIN_PITCH + (MAX_PITCH - MIN_PITCH) * (velocity.length() - MIN_SPEED) / (MAX_SPEED - MIN_SPEED)
+	drive_sound.pitch_scale = _pitch
+	draw_sound.pitch_scale = _pitch
+
 func _create_trail() -> void:
 	if _trail: _trail.destroy()
 	_trail = trail_scene.instantiate()
 	trails.add_child.call_deferred(_trail)
 
-func fall(damage_val: int = 2) -> void:
-	# state
-	_is_active = false
-
+func set_fall_state(damage_val: int = 2) -> void:
+	if not _is_active: return
 	# audio
 	fall_sound.play()	
 	draw_sound.stop()
 	drive_sound.stop()
 	power_charging_sound.stop()
 
-	if _death_tween: _death_tween.kill()
-	_death_tween = Utils.play_fall_animation(self)
-	_death_tween.tween_callback(
-		func():
-			damage(damage_val)
-			respawn()
-			)
+	Utils.play_fall_animation(self, _death_tween)
+
+	# state
+	_is_active = false
+
+func on_fall_completed() -> void:
+	damage(2)
+	respawn()
 
 func respawn() -> void:
 	_create_trail()

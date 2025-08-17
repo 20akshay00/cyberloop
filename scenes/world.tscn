@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://c2yidqjagbkrb"]
+[gd_scene load_steps=24 format=3 uid="uid://c2yidqjagbkrb"]
 
 [ext_resource type="Script" uid="uid://d1e3vu4scial2" path="res://scenes/world.gd" id="1_qfnet"]
 [ext_resource type="Texture2D" uid="uid://c3284varj7i2o" path="res://assets/art/background_v2.png" id="2_4mrxx"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://m7iwdw4caxjq" path="res://assets/art/stamina_bar_v1.png" id="4_w7kh3"]
 [ext_resource type="PackedScene" uid="uid://b1k1si4vlki42" path="res://scenes/droid.tscn" id="5_71j4m"]
 [ext_resource type="Texture2D" uid="uid://rqwnjkvh7dbb" path="res://assets/art/replay_icon_v1.png" id="6_dss4m"]
+[ext_resource type="Texture2D" uid="uid://bt23ntevqxn2b" path="res://assets/art/settings_icon_v1.png" id="7_7iits"]
 [ext_resource type="Texture2D" uid="uid://cumugct2g5h4" path="res://assets/art/replay_hover_v1.png" id="7_7t5mc"]
 [ext_resource type="Texture2D" uid="uid://dsncjko7y1q8u" path="res://assets/art/spawn_point_v1.png" id="7_e3hyu"]
 [ext_resource type="Texture2D" uid="uid://douaksfsgn5wr" path="res://assets/art/health_stamina_bar_frame_v1.png" id="7_i7141"]
@@ -16,6 +17,7 @@
 [ext_resource type="FontFile" uid="uid://cmmi1q3juj7cv" path="res://assets/fonts/PixelOperator-Bold.ttf" id="8_lakw3"]
 [ext_resource type="Texture2D" uid="uid://b7agburjl2awr" path="res://assets/art/cyberlooop_title_v1.png" id="9_dss4m"]
 [ext_resource type="PackedScene" uid="uid://dmr0fcamx7t56" path="res://addons/virtual_joystick/virtual_joystick_scene.tscn" id="10_pm21f"]
+[ext_resource type="PackedScene" uid="uid://1yd7cnuk8exk" path="res://scenes/settings.tscn" id="11_2lf6f"]
 [ext_resource type="PackedScene" uid="uid://bj2wc68ug3gbv" path="res://scenes/health_pickup.tscn" id="12_q5onr"]
 [ext_resource type="Script" uid="uid://c5yqgbyb6k0gc" path="res://scripts/spawner.gd" id="14_o8fc1"]
 [ext_resource type="AudioStream" uid="uid://uj6hdor8rjog" path="res://assets/sfx/Ping single tone.mp3" id="16_lakw3"]
@@ -84,19 +86,33 @@ action_right = "right"
 action_up = "up"
 action_down = "down"
 
-[node name="RetryButton" type="TextureButton" parent="UI"]
-custom_minimum_size = Vector2(50, 50)
+[node name="HBoxContainer" type="HBoxContainer" parent="UI"]
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -170.0
+offset_left = -244.0
 offset_top = -110.0
-offset_right = -100.0
+offset_right = -116.0
 offset_bottom = -60.0
 grow_horizontal = 0
 grow_vertical = 0
+
+[node name="SettingsButton" type="TextureButton" parent="UI/HBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture_normal = ExtResource("7_7iits")
+stretch_mode = 5
+
+[node name="VSeparator" type="VSeparator" parent="UI/HBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="RetryButton" type="TextureButton" parent="UI/HBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
 texture_normal = ExtResource("6_dss4m")
 texture_pressed = ExtResource("7_7t5mc")
 texture_hover = ExtResource("7_7t5mc")
@@ -182,6 +198,11 @@ text = "Wave 0"
 position = Vector2(480, 540)
 shape = SubResource("RectangleShape2D_pm21f")
 
+[node name="Settings" parent="UI" instance=ExtResource("11_2lf6f")]
+process_mode = 2
+visible = false
+modulate = Color(1, 1, 1, 0)
+
 [node name="Parallax2D" type="Parallax2D" parent="."]
 scroll_offset = Vector2(272, 171)
 repeat_size = Vector2(960, 960)
@@ -228,6 +249,9 @@ metadata/_edit_lock_ = true
 
 [node name="Mines" type="Node2D" parent="."]
 
+[node name="ProximityMine" parent="Mines" instance=ExtResource("8_7r4gi")]
+position = Vector2(600, 600)
+
 [node name="Pickups" type="Node2D" parent="."]
 
 [node name="Enemies" type="Node2D" parent="."]
@@ -245,7 +269,8 @@ position = Vector2(-57, -507)
 navigation_polygon = SubResource("NavigationPolygon_o8fc1")
 metadata/_edit_lock_ = true
 
-[connection signal="pressed" from="UI/RetryButton" to="UI" method="_on_retry_button_pressed"]
+[connection signal="pressed" from="UI/HBoxContainer/SettingsButton" to="UI" method="_on_settings_button_pressed"]
+[connection signal="pressed" from="UI/HBoxContainer/RetryButton" to="UI" method="_on_retry_button_pressed"]
 [connection signal="pressed" from="UI/TouchScreenButton" to="." method="_on_touch_screen_button_pressed"]
 [connection signal="released" from="UI/TouchScreenButton" to="." method="_on_touch_screen_button_released"]
 [connection signal="timeout" from="Spawner/CheckTimer" to="Spawner" method="_on_check_timer_timeout"]

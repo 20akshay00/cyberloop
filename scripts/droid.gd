@@ -7,7 +7,7 @@ class_name Droid
 var target: Player = null
 var dir: Vector2 = Vector2.ZERO
 
-var death_tween: Tween = null 
+var _death_tween: Tween = null 
 var _is_active = true
 
 func _ready() -> void:
@@ -40,23 +40,15 @@ func _on_shoot_timer_timeout() -> void:
 		add_sibling(projectile)
 		$ShootSound.play()
 
+func set_fall_state() -> void:
+	if not _is_active: return 
+	
+	EventManager.enemy_died.emit()
+	_death_tween = Utils.play_fall_animation(self, _death_tween)
+	_is_active = false
 
-func fall() -> void:
-	die()
-
-func die() -> void:
-	if _is_active:
-		EventManager.enemy_died.emit()
-		_is_active = false
-		if death_tween: death_tween.kill() 
-		
-		death_tween = get_tree().create_tween()
-		death_tween.set_parallel()
-		death_tween.tween_property(self, "rotation", rotation + 3*PI, 1)
-		death_tween.tween_property(self, "scale", Vector2(0., 0.), 1)
-		death_tween.tween_property(self, "modulate:a", 0., 1)
-		death_tween.set_parallel(false)
-		death_tween.tween_callback(queue_free)
+func on_fall_completed() -> void:
+	queue_free()
 
 func spawn() -> void:
 	var spawn_tween = get_tree().create_tween()

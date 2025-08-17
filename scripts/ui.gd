@@ -67,3 +67,7 @@ func set_wave(wave: int):
 	wave_tween = get_tree().create_tween()
 	wave_tween.tween_property($WaveLabel, "scale", Vector2(1.3, 1.3), 0.25)
 	wave_tween.tween_property($WaveLabel, "scale", Vector2(1., 1.), 0.25)
+
+func _on_settings_button_pressed() -> void:
+	$Settings.activate()
+	get_tree().paused = true

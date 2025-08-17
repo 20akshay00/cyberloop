@@ -1,16 +1,18 @@
 extends Area2D
 class_name ProximityMine
 
-var tween: Tween = null
+@export var EXPLOSION_DELAY: float = 0.15
+@export var fall_animation_config: FallAnimationConfig
+
+# onready variables
 @onready var light := $LightSprite
 @onready var explosion_timer := $ExplosionTimer
+
+# state
+var _is_active = true
 var _is_exploding := false
 
-var death_tween: Tween = null 
-var _is_active = true
-
-@export_subgroup("Visuals")
-@export var fall_animation_config: FallAnimationConfig
+var _death_tween: Tween = null 
 
 func _ready() -> void:
 	modulate.a = 0.
@@ -25,41 +27,16 @@ func explode() -> void:
 	$ExplosionSound.play()
 	$Explosion.show()
 	$Explosion.play("explode")	
-	$Explosion.animation_finished.connect(
-		func():
-			queue_free()
-	)
+	$Explosion.animation_finished.connect(queue_free)
 	$Explosion.reparent(get_parent())
 
-	if tween: tween.kill()
-	tween = get_tree().create_tween()
+	var tween = get_tree().create_tween()
 	tween.tween_property(self, "modulate:a", 0., 0.2)
 
 func _on_body_entered(body: Node2D) -> void:
 	if (body is Player) and not _is_exploding:
 		_is_exploding = true
-		get_tree().create_timer(0.05).timeout.connect(explode)
-
-		#if explosion_timer.is_stopped():
-			#explosion_timer.start()
-			#if tween: tween.kill()
-			#tween = get_tree().create_tween()
-			#tween.tween_property(light, "modulate:a", 0., 0.1)
-			#tween.tween_property(light, "modulate:a", 1., 0.1)
-			#tween.set_loops()
-
-#func _on_body_exited(body: Node2D) -> void:
-	#if get_overlapping_bodies().size() == 0:
-		#explosion_timer.stop()
-		#if tween: tween.kill()
-		#light.modulate.a = 0.
-#
-#func _on_explosion_timer_timeout() -> void:
-	#if not _is_exploding: explode()
-	#for body in get_overlapping_bodies():
-		#if body is Player:
-			#print("hi")
-			#body.hit(1)
+		get_tree().create_timer(EXPLOSION_DELAY).timeout.connect(explode)
 
 func spawn() -> void:
 	var spawn_tween = get_tree().create_tween()
@@ -68,3 +45,11 @@ func spawn() -> void:
 	spawn_tween.tween_property(self, "modulate:a", 1., 1.)
 	spawn_tween.set_parallel(false)
 	spawn_tween.tween_callback(func(): _is_active = true)
+
+func set_fall_state() -> void:
+	if not _is_active: return
+	Utils.play_fall_animation(self, _death_tween)
+	_is_active = false
+
+func on_fall_completed() -> void:
+	queue_free()

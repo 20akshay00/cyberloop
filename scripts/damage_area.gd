@@ -10,10 +10,10 @@ func _ready() -> void:
 		func(): 
 			_is_active = true
 			for body in get_overlapping_bodies():
-				body.fall()
+				body.set_fall_state()
 				
 			for area in get_overlapping_areas():
-				if area.has_method("fall"): area.fall()
+				if area.has_method("fall"): area.set_fall_state()
 	)
 	fade_in()
 
@@ -35,8 +35,8 @@ func set_points(points:PackedVector2Array) -> void:
 	$Polygon2D.uv = generate_uvs($Polygon2D.polygon)
 	
 func _on_body_entered(body: Node2D) -> void:
-	if body and _is_active:
-		body.fall()
+	if body and _is_active and body.has_method("set_fall_state"):
+		body.set_fall_state()
 
 func fade_in() -> void:
 	$Polygon2D.material.get_shader_parameter("dissolve_texture").noise.seed = randi()

@@ -19,7 +19,7 @@ alpha_target = 0.0
 metadata/_custom_type_script = "uid://p0s2wxxv800u"
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_lwjlu"]
-radius = 117.0
+radius = 180.178
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7d6rn"]
 atlas = ExtResource("5_n6sr2")
@@ -92,7 +92,7 @@ scale = Vector2(3, 3)
 texture = ExtResource("2_fck1g")
 
 [node name="RangeSprite" type="Sprite2D" parent="."]
-scale = Vector2(3, 3)
+scale = Vector2(4.5, 4.5)
 texture = ExtResource("4_n8pgp")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

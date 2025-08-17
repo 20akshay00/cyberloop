@@ -155,7 +155,7 @@ shader = ExtResource("3_tuyoq")
 shader_parameter/overlay_strength = 0.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_dwbse"]
-radius = 16.0
+radius = 14.0
 height = 66.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fulsm"]
