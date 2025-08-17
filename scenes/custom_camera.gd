@@ -19,6 +19,10 @@ const ZOOM_SPEED := 0.25
 
 @onready var alert_rect: ColorRect = $CanvasLayer/AlertRect
 
+func _ready() -> void:
+	EventManager.crt_toggled.connect(func(state: bool): $CanvasLayer/CRT.visible = state)
+	$CanvasLayer/CRT.visible = Config.crt_enabled
+
 func _physics_process(delta: float) -> void:
 	if active_shake_time > 0:
 		shake_time += delta * shake_time_speed

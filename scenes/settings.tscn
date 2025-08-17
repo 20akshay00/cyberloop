@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://1yd7cnuk8exk"]
+[gd_scene load_steps=11 format=3 uid="uid://1yd7cnuk8exk"]
 
 [ext_resource type="FontFile" uid="uid://cmmi1q3juj7cv" path="res://assets/fonts/PixelOperator-Bold.ttf" id="1_5p8wc"]
 [ext_resource type="Script" uid="uid://cvk8xpiaq7fkx" path="res://scripts/settings.gd" id="1_f4mfi"]
@@ -24,6 +24,8 @@ expand_margin_left = 5.0
 expand_margin_top = 5.0
 expand_margin_right = 5.0
 expand_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_83j8s"]
 
 [node name="Settings" type="Control"]
 layout_mode = 3
@@ -65,7 +67,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_fonts/font = ExtResource("1_5p8wc")
 theme_override_font_sizes/font_size = 32
-text = "Volume settings"
+text = "Volume"
 horizontal_alignment = 1
 
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer/VolumeControls"]
@@ -132,7 +134,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_fonts/font = ExtResource("1_5p8wc")
 theme_override_font_sizes/font_size = 32
-text = "Sensitivity settings"
+text = "Sensitivity"
 horizontal_alignment = 1
 
 [node name="HSeparator" type="HSeparator" parent="VBoxContainer/Sensitivity"]
@@ -214,6 +216,31 @@ modulate = Color(1, 1, 1, 0)
 layout_mode = 2
 theme_override_constants/separation = 60
 
+[node name="Visuals" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/Visuals"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("1_5p8wc")
+theme_override_font_sizes/font_size = 32
+text = "Visuals"
+horizontal_alignment = 1
+
+[node name="CheckBox" type="CheckBox" parent="VBoxContainer/Visuals"]
+layout_mode = 2
+theme_override_constants/h_separation = 20
+theme_override_fonts/font = ExtResource("1_5p8wc")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/focus = SubResource("StyleBoxEmpty_83j8s")
+button_pressed = true
+text = "CRT overlay"
+flat = true
+
+[node name="HSeparator3" type="HSeparator" parent="VBoxContainer"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+theme_override_constants/separation = 60
+
 [node name="ControlScheme" type="VBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 
@@ -269,6 +296,7 @@ stretch_mode = 5
 [connection signal="value_changed" from="VBoxContainer/Sensitivity/MouseSensitivity/MouseSlider" to="." method="_on_mouse_slider_value_changed"]
 [connection signal="value_changed" from="VBoxContainer/Sensitivity/RotationSensitivity/RotationSlider" to="." method="_on_rotation_slider_value_changed"]
 [connection signal="value_changed" from="VBoxContainer/Sensitivity/AccSensitivity/AccSlider" to="." method="_on_acc_slider_value_changed"]
+[connection signal="toggled" from="VBoxContainer/Visuals/CheckBox" to="." method="_on_check_box_toggled"]
 [connection signal="toggled" from="VBoxContainer/ControlScheme/Buttons/MouseButton" to="." method="_on_mouse_button_toggled"]
 [connection signal="toggled" from="VBoxContainer/ControlScheme/Buttons/KeyboardButton" to="." method="_on_keyboard_button_toggled"]
 [connection signal="toggled" from="VBoxContainer/ControlScheme/Buttons/ControllerButton" to="." method="_on_controller_button_toggled"]

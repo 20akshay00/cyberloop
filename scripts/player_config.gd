@@ -11,3 +11,5 @@ enum CONTROL_SCHEMES {MOUSE, KEYBOARD, CONTROLLER, TOUCHSCREEN}
 # for keyboard controls
 @export var rotation_sensitivity: float = 4.
 @export var acceleration_sensitivity: float = 800.
+
+@export var crt_enabled: bool = true

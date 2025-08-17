@@ -243,6 +243,10 @@ func damage(val) -> void:
 	EventManager.player_health_changed.emit()
 	EventManager.player_hit.emit()
 	
+func add_health(val: float) -> void:
+	health = min(MAX_HEALTH, health + val)
+	EventManager.player_health_changed.emit()
+
 func _activate_invincibility(duration: float = 4) -> void:
 	_is_invincible = true
 	if _invincibility_tween: _invincibility_tween.kill()
@@ -256,10 +260,6 @@ func _activate_invincibility(duration: float = 4) -> void:
 
 func _shake_screen() -> void:
 	camera.screen_shake(8, 0.5)
-
-func add_health(val: float) -> void:
-	health = min(MAX_HEALTH, health + val)
-	EventManager.player_health_changed.emit()
 
 func death() -> void:
 	_is_active = false

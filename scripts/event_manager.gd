@@ -15,3 +15,5 @@ signal wave_changed(wave: int)
 
 signal draw_enabled
 signal draw_disabled
+
+signal crt_toggled(state: bool)

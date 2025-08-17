@@ -11,6 +11,7 @@ extends Control
 @onready var rotation_slider: HSlider = $VBoxContainer/Sensitivity/RotationSensitivity/RotationSlider
 @onready var acc_slider: HSlider = $VBoxContainer/Sensitivity/AccSensitivity/AccSlider
 @onready var mouse_slider: HSlider = $VBoxContainer/Sensitivity/MouseSensitivity/MouseSlider
+@onready var check_box: CheckBox = $VBoxContainer/Visuals/CheckBox
 
 var button_map: Dictionary
 var tween: Tween
@@ -37,6 +38,7 @@ func _ready():
 	mouse_slider.value = Config.cursor_sensitivity
 	acc_slider.value = Config.acceleration_sensitivity
 	rotation_slider.value = Config.rotation_sensitivity
+	check_box.button_pressed = Config.crt_enabled
 
 func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("exit"):
@@ -96,3 +98,7 @@ func _on_rotation_slider_value_changed(value: float) -> void:
 
 func _on_mouse_slider_value_changed(value: float) -> void:
 	Config.cursor_sensitivity = value
+
+func _on_check_box_toggled(toggled_on: bool) -> void:
+	Config.crt_enabled = toggled_on
+	EventManager.crt_toggled.emit(toggled_on)
