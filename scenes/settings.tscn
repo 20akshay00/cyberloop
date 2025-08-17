@@ -33,8 +33,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_f4mfi")
-button_base_color = null
-button_press_color = null
 
 [node name="ColorRect" type="ColorRect" parent="."]
 material = SubResource("ShaderMaterial_6wm04")
@@ -154,12 +152,16 @@ theme_override_fonts/font = ExtResource("1_5p8wc")
 theme_override_font_sizes/font_size = 32
 text = "Mouse"
 
-[node name="HSlider" type="HSlider" parent="VBoxContainer/Sensitivity/MouseSensitivity"]
+[node name="MouseSlider" type="HSlider" parent="VBoxContainer/Sensitivity/MouseSensitivity"]
 custom_minimum_size = Vector2(650, 0)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
 theme_override_styles/slider = SubResource("StyleBoxFlat_36l1p")
+min_value = 2.0
+max_value = 5.0
+step = 0.01
+value = 2.0
 
 [node name="RotationSensitivity" type="HBoxContainer" parent="VBoxContainer/Sensitivity"]
 custom_minimum_size = Vector2(1000, 0)
@@ -173,12 +175,16 @@ theme_override_fonts/font = ExtResource("1_5p8wc")
 theme_override_font_sizes/font_size = 32
 text = "Keyboard rotation"
 
-[node name="HSlider" type="HSlider" parent="VBoxContainer/Sensitivity/RotationSensitivity"]
+[node name="RotationSlider" type="HSlider" parent="VBoxContainer/Sensitivity/RotationSensitivity"]
 custom_minimum_size = Vector2(650, 0)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
 theme_override_styles/slider = SubResource("StyleBoxFlat_36l1p")
+min_value = 2.0
+max_value = 6.0
+step = 0.01
+value = 2.0
 
 [node name="AccSensitivity" type="HBoxContainer" parent="VBoxContainer/Sensitivity"]
 custom_minimum_size = Vector2(1000, 0)
@@ -192,12 +198,16 @@ theme_override_fonts/font = ExtResource("1_5p8wc")
 theme_override_font_sizes/font_size = 32
 text = "Keyboard acceleration"
 
-[node name="HSlider" type="HSlider" parent="VBoxContainer/Sensitivity/AccSensitivity"]
+[node name="AccSlider" type="HSlider" parent="VBoxContainer/Sensitivity/AccSensitivity"]
 custom_minimum_size = Vector2(650, 0)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 4
 theme_override_styles/slider = SubResource("StyleBoxFlat_36l1p")
+min_value = 600.0
+max_value = 1000.0
+step = 10.0
+value = 600.0
 
 [node name="HSeparator2" type="HSeparator" parent="VBoxContainer"]
 modulate = Color(1, 1, 1, 0)
@@ -256,6 +266,9 @@ toggle_mode = true
 texture_normal = ExtResource("3_6wm04")
 stretch_mode = 5
 
+[connection signal="value_changed" from="VBoxContainer/Sensitivity/MouseSensitivity/MouseSlider" to="." method="_on_mouse_slider_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/Sensitivity/RotationSensitivity/RotationSlider" to="." method="_on_rotation_slider_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/Sensitivity/AccSensitivity/AccSlider" to="." method="_on_acc_slider_value_changed"]
 [connection signal="toggled" from="VBoxContainer/ControlScheme/Buttons/MouseButton" to="." method="_on_mouse_button_toggled"]
 [connection signal="toggled" from="VBoxContainer/ControlScheme/Buttons/KeyboardButton" to="." method="_on_keyboard_button_toggled"]
 [connection signal="toggled" from="VBoxContainer/ControlScheme/Buttons/ControllerButton" to="." method="_on_controller_button_toggled"]

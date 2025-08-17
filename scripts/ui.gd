@@ -30,6 +30,10 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	power_bar.value = player.power
 
+	if Input.is_action_just_pressed("exit"):
+		$Settings.activate()
+		get_tree().paused = true
+
 func _on_player_health_changed() -> void:
 	if tween: tween.kill()
 	tween = get_tree().create_tween()
